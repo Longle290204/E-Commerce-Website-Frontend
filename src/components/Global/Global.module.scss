@@ -1,0 +1,57 @@
+@import "normalize.css";
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: "futura-REGULAR", sans-serif;
+    font-size: 1.6rem;
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
+    color: #333;
+    overflow-x: hidden;
+    overflow-y: overlay;
+}
+
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+}
+
+a[href] {
+    text-decoration: none;
+}
+
+@font-face {
+    font-family: futura-REGULAR;
+    src: url("../../assets/fonts/futura-regular.woff");
+}
+
+@font-face {
+    font-family: futura-REGULAR;
+    src: url("../../assets/fonts/futura-regular.woff");
+}
+
+@font-face {
+    font-family: futura-REGULAR;
+    src: url("../../assets/fonts/futura-regular.woff");
+}
+
+@font-face {
+    font-family: futura-REGULAR;
+    src: url("../../assets/fonts/futura-regular.woff");
+}
+
+@font-face {
+    font-family: futura-REGULAR;
+    src: url("../../assets/fonts/futura-regular.woff");
+}
