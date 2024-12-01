@@ -12,6 +12,7 @@ import ProductAdminPage from "../pages/AdminPage/ProductAdminPage/ProductAdminPa
 import Dashboard from "../pages/AdminPage/Dashboard/Dashboard";
 import CreateProductPage from "../pages/AdminPage/CreateProductPage/CreateProductPage";
 import ListProductPage from "../pages/AdminPage/ListProductPage/ListProductPage";
+import CategoryPage from "../pages/AdminPage/CategoryPage/CategoryPages";
 
 const publicRoutes = [
     { path: "/", element: Home },
@@ -25,7 +26,7 @@ const publicRoutes = [
     { path: "/collection/Sport-Nu", element: SportNu },
     { path: "/admin", element: Dashboard, layout: AdminPage },
     {
-        path: "/admin/Products",
+        path: "/admin/products",
         element: ProductAdminPage,
         layout: AdminPage,
     },
@@ -37,6 +38,11 @@ const publicRoutes = [
     {
         path: "/admin/list-product",
         element: ListProductPage,
+        layout: AdminPage,
+    },
+    {
+        path: "/admin/category",
+        element: CategoryPage,
         layout: AdminPage,
     },
 ];
