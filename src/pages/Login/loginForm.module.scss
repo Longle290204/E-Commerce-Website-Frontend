@@ -1,0 +1,58 @@
+.form-login {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding-top: 10px;
+  width: 1112px;
+  margin: 15px auto;
+  overflow: hidden;
+  position: relative;
+  min-height: 400px;
+}
+
+.or-line {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: solid 1px #e7e7e7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  z-index: 2;
+  background-color: white; /* Màu nền trùng với nền trang */
+  font-size: 14px; /* Kích thước chữ */
+  color: black; /* Màu chữ */
+}
+
+.or-line span {
+  font-family: MuliDisplayVN-Italic;
+  position: relative;
+  z-index: 4; /* Đặt chữ lên trên cùng */
+}
+
+.or-line::before {
+  content: "";
+  position: absolute;
+  width: 46px; /* Nhỏ hơn kích thước hình tròn để không che chữ */
+  height: 46px;
+  background-color: white; /* Màu nền trùng với trang */
+  border-radius: 50%; /* Giữ hình tròn */
+  z-index: 3; /* Che phần gạch mà không che chữ */
+}
+
+.or-line::after {
+  position: absolute;
+  content: "";
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100vh;
+  width: 0.3px;
+  background-color: #dddddd;
+  z-index: 1; /* Đặt dưới lớp phủ và hình tròn */
+}
+
+.or-line > span {
+  font-weight: 400;
+}
