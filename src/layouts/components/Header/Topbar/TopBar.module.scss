@@ -1,0 +1,176 @@
+.logo-bitis {
+  width: 95.96px;
+  height: 60px;
+}
+
+// Top bar
+
+li::marker {
+  content: " ";
+}
+
+.wrapper {
+  width: 100%;
+}
+
+.box-other-buy {
+  display: flex;
+  align-items: center;
+  line-height: 33px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 13px;
+  padding: 8px 0;
+  background: #212026;
+  color: #ffffff;
+}
+
+.top-bar {
+  background: #212026;
+  display: flex;
+  justify-content: center;
+}
+
+.header-hotline {
+  width: 1530px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+}
+
+.hotline {
+  display: flex;
+  position: relative;
+  align-items: center;
+  font-size: 1.3rem;
+}
+
+.hot-line {
+  position: relative;
+  margin-right: 30px;
+}
+
+.phone-number {
+  font-weight: 600;
+  margin: 0 4px 0 4px;
+}
+
+.hot-line::after {
+  position: absolute;
+  content: " ";
+  display: block;
+  background-color: white;
+  width: 1px;
+  height: 100%;
+  right: -15px;
+  top: 0;
+}
+
+.B2B-img {
+  display: inline;
+  width: 147.75px;
+  height: 33px;
+  border-radius: 999px;
+}
+
+.B2B-link {
+  display: flex;
+}
+
+.language {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 75px;
+  height: 19px;
+  position: relative;
+  background: url(../../../../assets/images/vietnam.webp) no-repeat;
+  padding-left: 29px;
+  background-size: contain;
+  background-position: left center;
+  cursor: pointer;
+  margin-right: 19px;
+  margin-top: 1px;
+}
+
+.language::after {
+  display: block;
+  position: absolute;
+  content: " ";
+  width: 1px;
+  height: 33px;
+  background-color: white;
+  right: -9px;
+  top: -8px;
+  pointer-events: none;
+}
+
+.chevronDown {
+  height: 9px;
+  width: 9px;
+  margin-bottom: 1px;
+  margin-left: 2px;
+}
+
+.other-buy {
+  display: flex;
+}
+
+.link-buy {
+  position: relative;
+  color: white;
+  margin-right: 20px;
+}
+
+.vertical-lines {
+  position: absolute;
+  content: " ";
+  background-color: white;
+  width: 1px;
+  height: 19px;
+  top: 0;
+  right: -10px;
+  cursor: auto;
+}
+
+.Vn-chevron {
+  margin-left: 7px;
+}
+
+.contact-text {
+  color: white;
+  transition: 0.19s ease-in;
+}
+
+.contact-text:hover {
+  color: #000000;
+}
+
+.option-language {
+  width: 75px;
+}
+
+.flag-vn {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  background: url(../../../../assets/images/vietnam.webp) no-repeat;
+  padding-left: 34px;
+  background-size: contain;
+  background-position: left center;
+  cursor: pointer;
+  color: #000000;
+}
+
+.flag-en {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  background: url(../../../../assets/images/united-kingdom.webp) no-repeat;
+  padding-left: 34px;
+  background-size: contain;
+  background-position: left center;
+  cursor: pointer;
+  color: #000000;
+}
