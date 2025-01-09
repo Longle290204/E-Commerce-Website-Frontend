@@ -15,36 +15,36 @@ import ListProductPage from "../pages/AdminPage/ListProductPage/ListProductPage"
 import CategoryPage from "../pages/AdminPage/CategoryPage/CategoryPages";
 
 const publicRoutes = [
-    { path: "/", element: Home },
-    { path: "/cart", element: Cart },
-    { path: "/login", element: LoginForm },
-    { path: "/collection/nam", element: NamCategory },
-    { path: "/collection/nu", element: NuCategory },
-    { path: "/collection/Sandal-Nam", element: SandalNam },
-    { path: "/collection/Sandal-Nu", element: SandalNu },
-    { path: "/collection/Sport-Nam", element: SportNam },
-    { path: "/collection/Sport-Nu", element: SportNu },
-    { path: "/admin", element: Dashboard, layout: AdminPage },
-    {
-        path: "/admin/products",
-        element: ProductAdminPage,
-        layout: AdminPage,
-    },
-    {
-        path: "/admin/create-product",
-        element: CreateProductPage,
-        layout: AdminPage,
-    },
-    {
-        path: "/admin/list-product",
-        element: ListProductPage,
-        layout: AdminPage,
-    },
-    {
-        path: "/admin/category",
-        element: CategoryPage,
-        layout: AdminPage,
-    },
+  { path: "/", element: Home },
+  { path: "/cart", element: Cart },
+  { path: "/login", element: LoginForm },
+  { path: "/collection/nam", element: NamCategory },
+  { path: "/collection/nu", element: NuCategory },
+  { path: "/collection/Sandal-Nam", element: SandalNam },
+  { path: "/collection/Sandal-Nu", element: SandalNu },
+  { path: "/collection/Sport-Nam", element: SportNam },
+  { path: "/collection/Sport-Nu", element: SportNu },
+  { path: "/admin", element: Dashboard, layout: AdminPage },
+  {
+    path: "/admin/products",
+    element: ProductAdminPage,
+    layout: AdminPage,
+  },
+  {
+    path: "/admin/create-product",
+    element: CreateProductPage,
+    layout: AdminPage,
+  },
+  {
+    path: "/admin/list-product",
+    element: ListProductPage,
+    layout: AdminPage,
+  },
+  {
+    path: "/admin/category",
+    element: CategoryPage,
+    layout: AdminPage,
+  },
 ];
 
 export { publicRoutes };
