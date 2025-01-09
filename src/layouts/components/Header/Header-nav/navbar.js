@@ -202,7 +202,7 @@ function Navbar({ children }) {
                      <Image iconName={'shoppingCartIcon'} />
 
                      {/* <---- Cart preview ----> */}
-                     <div className={cx('cart-preview')}>{/* <ShoppingCart /> */}</div>
+                     <div className={cx('cart-preview')}><ShoppingCart /></div>
                   </div>
                </div>
             </nav>
