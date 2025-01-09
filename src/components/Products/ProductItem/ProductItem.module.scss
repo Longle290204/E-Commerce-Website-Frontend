@@ -1,0 +1,17 @@
+.product-item img {
+  height: auto;
+  object-fit: cover;
+}
+
+.product-item {
+  display: flex;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+  transition: transform 0.3s ease;
+}
+
+// .product-item:hover {
+//     transform: scale(1.05); /* Hiệu ứng khi hover */
+// }
