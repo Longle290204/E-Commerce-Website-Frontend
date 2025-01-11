@@ -4,7 +4,7 @@ import images from '../../../../assets/images/image';
 import styles from './Navbar.module.scss';
 import { Link } from 'react-router-dom';
 import Image from '../../../images/image';
-import ShoppingCart from './shopping-cart/shoppingCart';
+import MiniCart from './Mini-cart/MiniCart';
 
 const cx = classNames.bind(styles);
 
@@ -47,7 +47,7 @@ function Navbar({ children }) {
    }, [lastScrollTop]);
 
    return (
-      <div className={cx('wrapper')}>
+      <div className={cx('wrapper', "w-screen")}>
          <div
             className={cx('header-nav', {
                'header-nav-up': isVisible,
@@ -66,7 +66,7 @@ function Navbar({ children }) {
             <nav className={cx('inner-nav')}>
                <logo className={cx('header-wrap-logo')}>
                   <Link to="/">
-                     <img src={images.logoLevion} alt="Levion" className='w-[95px] h-[60px]'/>
+                     <img src={images.logoLevion} alt="Levion" className="w-[95px] h-[60px]" />
                   </Link>
                </logo>
 
@@ -198,16 +198,19 @@ function Navbar({ children }) {
                   </div>
 
                   {/* <---- Cart btn ----> */}
-                  <div className="cursor-pointer">
+                  <div className={cx('cart-btn')}>
                      <Image iconName={'shoppingCartIcon'} />
 
                      {/* <---- Cart preview ----> */}
-                     <div className={cx('cart-preview')}><ShoppingCart /></div>
+                     <div className={cx('cart-preview')}>
+                        <MiniCart />
+                     </div>
                   </div>
                </div>
             </nav>
          </div>
-         {children}
+
+         <div className="flex flex-col justify-center items-center">{children}</div>
       </div>
    );
 }

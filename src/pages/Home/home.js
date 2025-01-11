@@ -4,6 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import ProductSlider from '../../components/Products/Product-slide/Product-slide';
 import SlideBanner from '../../components/SlideBanner/SlideBannerImage/SlideBaner';
+import ProductListCategory from '../../components/Products/ProductListCategory';
 
 const cx = classNames.bind(styles);
 
@@ -37,7 +38,7 @@ function Home() {
    }, []);
 
    return (
-      <section>
+      <section className="max-w-[1912px]">
          <div className={cx('flex justify-items-start')}>
             <SlideBanner slideBanners={slideBanners} />
          </div>
@@ -59,11 +60,12 @@ function Home() {
                   </div>
                </div>
             </section>
-            <section>
+            <section className="max-w-[1340px]">
                <div className={cx('flex flex-col align-middle items-center mb-6')}>
                   <span className={cx('mt-5 text-amber-400 font-semibold')}>LEVION</span>
                   <h2 className="text-3xl font-semibold mt-5">SẢN PHẨM BÁN CHẠY</h2>
                </div>
+               <ProductListCategory products={products} />
             </section>
          </div>
       </section>
