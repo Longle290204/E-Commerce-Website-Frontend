@@ -1,236 +1,182 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import styles from "./sign-up.module.scss";
-import classNames from "classnames/bind";
+import { useState, useEffect } from 'react';
+import classNames from 'classnames/bind';
+import axios from 'axios';
+import styles from './sign-up.module.scss';
+import useDebounce from '../../../hooks/useDebounce';
 
 function SignUp() {
-  const cx = classNames.bind(styles);
+   const cx = classNames.bind(styles);
+   const [formData, setFormData] = useState({
+      username: '',
+      phoneNumber: '',
+      password: '',
+      rePassword: '',
+   });
+   const [debouncedField, setDebouncedField] = useState({ name: '', value: '' });
 
-  // State cho Sign Up
-  const [signUpUsername, setSignUpUsername] = useState("");
-  const [signUpPassword, setSignUpPassword] = useState("");
-  const [signUpPhoneNumber, setSignUpPhoneNumber] = useState("");
-  const [signUpRePassword, setSignUpRePassword] = useState("");
-  const [signUpErrors, setSignUpErrors] = useState({});
+   const debouncedValue = useDebounce(debouncedField, 500); // Debounce thời gian 500ms
 
-  // Validation rules cho Sign Up
-  const validateField = (field, errors) => {
-    switch (field) {
-      case "username":
-        const upperCaseRegex = /^(?=.*[A-Z])(?=.*\d).+$/;
-        if (!signUpUsername.trim()) {
-          errors.username = "Vui lòng nhập đầy đủ tên";
-        } else if (!upperCaseRegex.test(signUpUsername)) {
-          errors.username = "Tên phải có tối thiểu một chữ hoa và số";
-        }
-        break;
+   const [errors, setErrors] = useState({});
 
-      case "phoneNumber":
-        if (!signUpPhoneNumber.trim()) {
-          errors.phoneNumber = "Vui lòng nhập số điện thoại";
-        } else if (signUpPhoneNumber.length < 10) {
-          errors.phoneNumber = "Số điện thoại phải có ít nhất 10 ký tự";
-        }
-        break;
+   const validationRules = {
+      username: {
+         required: 'Vui lòng nhập đầy đủ tên',
+         pattern: {
+            value: /^(?=.*[A-Z])(?=.*\d).+$/,
+            message: 'Tên phải có tối thiểu một chữ hoa và số',
+         },
+      },
+      phoneNumber: {
+         required: 'Vui lòng nhập số điện thoại',
+         minLength: {
+            value: 10,
+            message: 'Số điện thoại phải có ít nhất 10 ký tự',
+         },
+      },
+      password: {
+         required: 'Vui lòng nhập mật khẩu',
+         minLength: {
+            value: 6,
+            message: 'Mật khẩu phải có ít nhất 6 ký tự',
+         },
+      },
+      rePassword: {
+         required: 'Vui lòng nhập lại mật khẩu',
+         custom: {
+            isValid: (value) => value === formData.password,
+            message: 'Mật khẩu nhập lại không chính xác',
+         },
+      },
+   };
 
-      case "password":
-        if (!signUpPassword.trim()) {
-          errors.password = "Vui lòng nhập mật khẩu";
-        } else if (signUpPassword.length < 6) {
-          errors.password = "Mật khẩu phải có ít nhất 6 ký tự";
-        }
-        break;
+   const validateField = async (field, value) => {
+      const rules = validationRules[field];
+      if (!rules) return '';
 
-      case "rePassword":
-        if (!signUpRePassword.trim()) {
-          errors.rePassword = "Vui lòng nhập lại mật khẩu";
-        } else if (signUpPassword !== signUpRePassword) {
-          errors.rePassword = "Mật khẩu nhập lại không chính xác";
-        }
-        break;
+      if (rules.required && !value.trim()) return rules.required;
+      if (rules.pattern && !rules.pattern.value.test(value)) return rules.pattern.message;
+      if (rules.minLength && value.length < rules.minLength.value) return rules.minLength.message;
+      if (rules.custom && !rules.custom.isValid(value)) return rules.custom.message;
 
-      default:
-        break;
-    }
-  };
-
-  const validateAllFields = () => {
-    const newErrors = { ...signUpErrors };
-    validateField("username", newErrors);
-    validateField("phoneNumber", newErrors);
-    validateField("password", newErrors);
-    validateField("rePassword", newErrors);
-    // setSignUpErrors(newErrors);
-    return newErrors;
-  };
-  // Hàm xử lý Sign Up
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    const updatedErrors = validateAllFields();
-    if (Object.keys(updatedErrors).length === 0) {
-      try {
-        const response = await axios.post("http://localhost:3002/auth/signUp", {
-          username: signUpUsername,
-          phoneNumber: signUpPhoneNumber,
-          password: signUpPassword,
-        });
-        console.log(response.data);
-        alert("Sign up successful! You can sign in now");
-      } catch (error) {
-        console.error(error.message);
+      if (field === 'username' || field === 'phoneNumber') {
+         const existError = await checkIfExists(field, value);
+         if (existError) return existError;
       }
-      console.log("Form is valid, submit the data");
-    } else {
-      setSignUpErrors(updatedErrors);
-      console.log("Form contains errors");
-    }
-  };
 
-  // Reset lỗi khi có sự thay đổi input trong Sign Up
-  useEffect(() => {
-    setSignUpErrors((prevErrors) => ({
-      ...prevErrors,
-      username: "", // Reset lỗi cho username
-    }));
-  }, [signUpUsername]);
+      return '';
+   };
 
-  useEffect(() => {
-    setSignUpErrors((prevErrors) => ({
-      ...prevErrors,
-      phoneNumber: "", // Reset lỗi cho phoneNumber
-    }));
-  }, [signUpPhoneNumber]);
+   const checkIfExists = async (field, value) => {
+      try {
+         const response = await axios.post(`http://localhost:3002/auth/checkIfExist`, { [field]: value });
+         console.log(response.data.exists);
+         return response.data.exists
+            ? field === 'username'
+               ? `Tên đăng nhập đã tồn tại`
+               : `Số điện thoại đã tồn tại`
+            : '';
+      } catch (error) {
+         console.error('Lỗi kiểm tra tồn tại:', error);
+         return 'Lỗi kết nối, vui lòng thử lại';
+      }
+   };
 
-  useEffect(() => {
-    setSignUpErrors((prevErrors) => ({
-      ...prevErrors,
-      password: "", // Reset lỗi cho password
-    }));
-  }, [signUpPassword]);
+   const validateAll = () => {
+      const newErrors = {};
+      Object.keys(formData).forEach(async (field) => {
+         const error = await validateField(field, formData[field]);
+         if (error) newErrors[field] = error;
+      });
+      return newErrors;
+   };
 
-  useEffect(() => {
-    setSignUpErrors((prevErrors) => ({
-      ...prevErrors,
-      rePassword: "", // Reset lỗi cho rePassword
-    }));
-  }, [signUpRePassword]);
+   const handleInputChange = async (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      setErrors((prev) => ({ ...prev, [name]: '' })); // Reset lỗi của field hiện tại
 
-  return (
-    <form onSubmit={handleSignUp} noValidate className={cx("form-signUp")}>
-      <h4>ĐĂNG KÝ</h4>
+      // if (name === 'username' || name === 'phoneNumber') {
+      //    // const existError = await checkIfExists(name, value);
+      //    // setErrors((prev) => ({ ...prev, [name]: existError }));
 
-      <div className={cx("box-info")}>
-        <label htmlFor="signUpUsername">
-          Tên đăng nhập<span>*</span>
-        </label>
-        <input
-          className={cx(
-            "input-form",
-            signUpErrors.username ? "input-form-wrong" : "input-form-hover",
-          )}
-          type="text"
-          id="signUpUsername"
-          value={signUpUsername}
-          onChange={(e) => setSignUpUsername(e.target.value)}
-          onBlur={() => {
-            const newErrors = { ...signUpErrors };
-            validateField("username", newErrors);
-            setSignUpErrors(newErrors); // Cập nhật lỗi ngay khi rời khỏi input
-          }}
-          required
-        />
-        {signUpErrors.username && (
-          <span className={cx("form-message")}>{signUpErrors.username}</span>
-        )}
-      </div>
+      //    setDebouncedField({ name, value }); // Chỉ debounce với username và phoneNumber
+      // }
+   };
 
-      <div className={cx("box-info")}>
-        <label htmlFor="signUpPhoneNumber">
-          Số điện thoại<span>*</span>
-        </label>
-        <input
-          className={cx(
-            "input-form",
-            signUpErrors.phoneNumber ? "input-form-wrong" : "input-form-hover",
-          )}
-          type="text"
-          id="signUpPhoneNumber"
-          value={signUpPhoneNumber}
-          onChange={(e) => setSignUpPhoneNumber(e.target.value)}
-          onBlur={() => {
-            const newErrors = { ...signUpErrors };
-            validateField("phoneNumber", newErrors);
-            setSignUpErrors(newErrors);
-          }}
-          required
-        />
-        {signUpErrors.phoneNumber && (
-          <span className={cx("form-message")}>{signUpErrors.phoneNumber}</span>
-        )}
-      </div>
+   // useEffect(() => {
+   //    const checkDebouncedField = async () => {
+   //       if (debouncedValue.name && debouncedValue.value) {
+   //          const existError = await checkIfExists(debouncedValue.name, debouncedValue.value);
+   //          setErrors((prev) => ({ ...prev, [debouncedValue.name]: existError }));
+   //       }
+   //    };
 
-      <div className={cx("box-info")}>
-        <label htmlFor="signUpPassword">
-          Mật khẩu<span>*</span>
-        </label>
-        <input
-          className={cx(
-            "input-form",
-            signUpErrors.password ? "input-form-wrong" : "input-form-hover",
-          )}
-          type="password"
-          id="signUpPassword"
-          value={signUpPassword}
-          onChange={(e) => setSignUpPassword(e.target.value)}
-          onBlur={() => {
-            const newErrors = { ...signUpErrors };
-            validateField("password", newErrors);
-            setSignUpErrors(newErrors);
-          }}
-          required
-        />
-        {signUpErrors.password && (
-          <span className={cx("form-message")}>{signUpErrors.password}</span>
-        )}
-      </div>
+   //    checkDebouncedField();
+   // }, debouncedField);
 
-      <div className={cx("box-info")}>
-        <label htmlFor="signUpRePassword">
-          Nhắc lại mật khẩu<span>*</span>
-        </label>
-        <input
-          className={cx(
-            "input-form",
-            signUpErrors.rePassword ? "input-form-wrong" : "input-form-hover",
-          )}
-          type="password"
-          id="signUpRePassword"
-          value={signUpRePassword}
-          onChange={(e) => setSignUpRePassword(e.target.value)}
-          onBlur={() => {
-            const newErrors = { ...signUpErrors };
-            validateField("rePassword", newErrors);
-            setSignUpErrors(newErrors);
-          }}
-          required
-        />
-        {signUpErrors.rePassword && (
-          <span className={cx("form-message")}>{signUpErrors.rePassword}</span>
-        )}
-      </div>
+   const handleBlur = async (e) => {
+      const { name, value } = e.target;
+      const error = await validateField(name, value);
+      setErrors((prev) => ({ ...prev, [name]: error }));
+   };
 
-      <button className={cx("form-button")} type="submit">
-        Đăng Ký
-      </button>
+   const handleSubmit = async (e) => {
+      e.preventDefault();
 
-      <div className={cx("note")}>
-        <p>
-          Thông tin cá nhân của bạn sẽ được dùng để điền vào hóa đơn, giúp bạn
-          thanh toán nhanh chóng và dễ dàng
-        </p>
-      </div>
-    </form>
-  );
+      const newErrors = await validateAll();
+      if (Object.keys(newErrors).length > 0) {
+         setErrors(newErrors);
+         return;
+      }
+
+      try {
+         const response = await axios.post('http://localhost:3002/auth/signUp', {
+            username: formData.username,
+            phoneNumber: formData.phoneNumber,
+            password: formData.password,
+         });
+         alert('Đăng ký thành công! Bạn có thể đăng nhập ngay.');
+         console.log(response.data);
+      } catch (error) {
+         console.error(error.message);
+      }
+   };
+
+   return (
+      <form onSubmit={handleSubmit} noValidate className={cx('form-signUp')}>
+         <h4>ĐĂNG KÝ</h4>
+         {['username', 'phoneNumber', 'password', 'rePassword'].map((field) => (
+            <div className={cx('box-info')} key={field}>
+               <label htmlFor={field}>
+                  {field === 'username' && 'Tên đăng nhập'}
+                  {field === 'phoneNumber' && 'Số điện thoại'}
+                  {field === 'password' && 'Mật khẩu'}
+                  {field === 'rePassword' && 'Nhắc lại mật khẩu'}
+                  <span>*</span>
+               </label>
+               <input
+                  className={cx('input-form', errors[field] ? 'input-form-wrong' : 'input-form-hover')}
+                  type={field.includes('password') ? 'password' : 'text'}
+                  id={field}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleInputChange}
+                  onBlur={(e) => handleBlur(e)}
+                  required
+               />
+               {errors[field] && <span className={cx('form-message')}>{errors[field]}</span>}
+            </div>
+         ))}
+         <button className={cx('form-button')} type="submit">
+            Đăng Ký
+         </button>
+         <div className={cx('note')}>
+            <p>
+               Thông tin cá nhân của bạn sẽ được dùng để điền vào hóa đơn, giúp bạn thanh toán nhanh chóng và dễ dàng
+            </p>
+         </div>
+      </form>
+   );
 }
 
 export default SignUp;
