@@ -1,14 +1,17 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import GlobalStyles from "./components/Global/global";
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import GlobalStyles from './components/Global/global';
+import './index.css';
+import CartProvider from './Context/CartContext';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <GlobalStyles>
-    <App />
-  </GlobalStyles>,
+   <GlobalStyles>
+      <CartProvider>
+         <App />
+      </CartProvider>
+   </GlobalStyles>,
 );
 
 // If you want to start measuring performance in your app, pass a function
