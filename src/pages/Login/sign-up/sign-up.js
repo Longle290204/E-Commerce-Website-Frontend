@@ -123,7 +123,7 @@ function SignUp() {
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      const newErrors = await validateAll();
+      const newErrors = validateAll();
       if (Object.keys(newErrors).length > 0) {
          setErrors(newErrors);
          return;

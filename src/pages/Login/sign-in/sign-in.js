@@ -35,7 +35,8 @@ function SignIn() {
             password: signInPassword,
          });
          console.log(response);
-         localStorage.setItem('token', response.data.accessToken);
+         localStorage.setItem('accessToken', response.data.accessToken);
+         localStorage.setItem('refreshToken', response.data.refreshToken);
 
          // Chuyển hướng đến trang home
          navigate('/');
