@@ -50,6 +50,11 @@ const ProductPage = () => {
                <Grid item xl={6}>
                   <ProductThumbnail />
                </Grid>
+
+               {/* Cột bên phải (Thông tin sản phẩm) */}
+               <Grid item xl={6} sx={{ flexGrow: 1 }}>
+                  <ProductInfo />
+               </Grid>
             </Grid>
          </Container>
       </ThemeProvider>
