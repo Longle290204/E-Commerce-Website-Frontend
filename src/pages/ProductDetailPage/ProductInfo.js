@@ -15,18 +15,11 @@ function ProductInfo(props) {
    const [inputValue, setInputValue] = useState(1);
 
    const handleQuantity = (method) => {
-      if (method === 'plus') {
-         return setInputValue((prev) => (prev === '' ? 1 : prev + 1));
-      } else if (method === 'minus') {
-         return setInputValue((prev) => {
-            if (prev) {
-               return prev > 1 ? prev - 1 : 1;
-            } else {
-               return '';
-            }
-         });
-      }
-      return;
+      setInputValue((prev) => {
+         if (method === 'plus') return prev === '' ? 1 : prev + 1;
+         if (method === 'minus') return prev > 1 ? prev - 1 : prev;
+         return prev;
+      });
    };
 
    const images = [

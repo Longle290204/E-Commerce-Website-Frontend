@@ -1,12 +1,11 @@
 import React from 'react';
-import { Card, CardMedia, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import ProductThumbnail from './ProductThumbnail';
 import ProductInfo from './ProductInfo';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import hunterwhite2 from '../../assets/images/hunterwhite2.webp';
 
-const ProductPage = () => {
+const ProductDetail = () => {
    const theme = createTheme({
       typography: {
          h5: {
@@ -61,4 +60,4 @@ const ProductPage = () => {
    );
 };
 
-export default ProductPage;
+export default ProductDetail;
