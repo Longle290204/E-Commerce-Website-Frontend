@@ -11,6 +11,18 @@ function ProductInfo(props) {
    const sizes = [36, 37, 38, 39, 40, 41, 42, 43];
    const [activeSize, setActiveSize] = useState(sizes[0]);
 
+   // Input value quantity
+   const [inputValue, setInputValue] = useState(1);
+
+   const handleQuantity = (method) => {
+      if (method === 'plus') {
+         return setInputValue((prev) => prev + 1);
+      } else if (method === 'minus') {
+         return setInputValue((prev) => (prev > 1 ? prev - 1 : 1));
+      }
+      return;
+   };
+
    const images = [
       { image: hunterwhite4, title: 'Trắng' },
       { image: hunterpink1, title: 'Hồng' },
@@ -169,6 +181,43 @@ function ProductInfo(props) {
                ))}
             </Box>
 
+            {/* =============== Số lượng =============== */}
+            <Box variant="div">
+               <Typography variant="h5" sx={{ marginTop: 5, fontWeight: '400' }}>
+                  Số lượng
+               </Typography>
+               <Box variant="div" className="itemQuantity" sx={{ display: 'flex', alignItems: 'center' }}>
+                  <button
+                     className="qtyBtn minusQuan w-14 border-t border-b border-l border-[#808080]"
+                     data-type="minus"
+                     onClick={() => handleQuantity('minus')}
+                  >
+                     -
+                  </button>
+                  <input
+                     type="text"
+                     id="quantity"
+                     name="quantity"
+                     value={inputValue}
+                     min="1"
+                     onChange={(e) => {
+                        const value = Number(e.target.value);
+                        setInputValue(value >= 1 ? value : ''); // Không cho nhập số nhỏ hơn 1
+                     }}
+                     className="w-16 text-center border [&::-webkit-inner-spin-button]:appearance-none 
+                              [&::-webkit-outer-spin-button]:appearance-none 
+                              [appearance:textfield]"
+                  />
+                  <button
+                     className="qtyBtn plusQuan w-14 border-t border-b border-r border-[#808080]"
+                     data-type="plus"
+                     onClick={() => handleQuantity('plus')}
+                  >
+                     +
+                  </button>
+               </Box>
+            </Box>
+
             {/* =============== Nút mua hàng =============== */}
             <Box display="flex" gap="20px" sx={{ marginTop: 5 }}>
                <Button variant="contained" fullWidth sx={{ backgroundColor: '#fafafa', color: 'black' }}>
@@ -188,4 +237,3 @@ ProductInfo.propTypes = {
 };
 
 export default ProductInfo;
-
