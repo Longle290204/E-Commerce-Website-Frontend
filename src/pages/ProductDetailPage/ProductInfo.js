@@ -16,9 +16,15 @@ function ProductInfo(props) {
 
    const handleQuantity = (method) => {
       if (method === 'plus') {
-         return setInputValue((prev) => prev + 1);
+         return setInputValue((prev) => (prev === '' ? 1 : prev + 1));
       } else if (method === 'minus') {
-         return setInputValue((prev) => (prev > 1 ? prev - 1 : 1));
+         return setInputValue((prev) => {
+            if (prev) {
+               return prev > 1 ? prev - 1 : 1;
+            } else {
+               return '';
+            }
+         });
       }
       return;
    };
@@ -204,7 +210,7 @@ function ProductInfo(props) {
                         const value = Number(e.target.value);
                         setInputValue(value >= 1 ? value : ''); // Không cho nhập số nhỏ hơn 1
                      }}
-                     className="w-16 text-center border [&::-webkit-inner-spin-button]:appearance-none 
+                     className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
                               [&::-webkit-outer-spin-button]:appearance-none 
                               [appearance:textfield]"
                   />
