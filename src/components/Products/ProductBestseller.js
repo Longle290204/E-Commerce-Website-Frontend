@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { CartContext } from '../../Context/CartContext';
 import images from '../../assets/images/image';
@@ -56,32 +55,33 @@ function ProductBestseller({ products }) {
       } else {
          console.log('Lấy chi tiết sản phẩm với ID:', id);
          // Thực hiện hành động bảo vệ (ví dụ: gọi API lấy thông tin sản phẩm)
-         navigate(`/products`);
+         navigate(`/products/${id}`);
       }
    };
 
-   const toggleHeart = () => {
-      setIsActive(!isActive);
-   };
+   const toggleHeart = (productId) => {};
 
    return (
       <section>
          <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 bg-[white] p-3">
             {products.map((product, id) => (
-               <article key={product.id} className="relative flex flex-col items-center group">
+               <article key={id} className="relative flex flex-col items-center group">
                   <HeartIcon
                      className="absolute right-4 top-4 cursor-pointer"
-                     onClick={toggleHeart}
                      fill={isActive ? '#E35353' : '#000'}
+                     onClick={() => toggleHeart(product.id)}
                   />
                   {/* <img className="absolute right-4 top-4 " src={images.heart} alt="heart" /> */}
                   <img
-                     className="cursor-pointer object-cover pr-[-1px] pl-[-1px]"
-                     src={product.imageURL}
+                     className="w-[320px] h-[320px] cursor-pointer object-cover pr-[-1px] pl-[-1px]"
+                     src={product.mainImage}
                      alt={product.name}
                      onClick={() => handleProductClick(product.id)}
                   />
-                  <p className="text-[1.4rem] mt-4 ml-4 mr-4 font-medium  cursor-pointer hover:text-blue-500 [transition:ease-in-out_0.3s]">
+                  <p
+                     className="text-[1.4rem] mt-4 ml-4 mr-4 font-medium  cursor-pointer hover:text-blue-500 [transition:ease-in-out_0.3s]"
+                     onClick={() => handleProductClick(product.id)}
+                  >
                      {product.name}
                   </p>
                   <p className="text-[1.4rem] font-medium text-[red] ml-[20px] mt-[10px]">{product.price}</p>
