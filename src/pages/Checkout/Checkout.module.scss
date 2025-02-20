@@ -1,0 +1,23 @@
+input {
+   outline: none;
+   font-family: inherit;
+}
+
+input:focus + label,
+input:not(:placeholder-shown) + label   {
+   translate: 0 -153%;  
+   background-color: #fff;
+   transition: all 0.2s ease-out; /* Dùng all để áp dụng cho mọi thay đổi */
+   transform-origin: left bottom; /* Điều chỉnh điểm xoay */
+   scale: 0.92; /* Phóng to nhẹ để nhìn tự nhiên hơn */
+}
+
+.label-name {
+   left: 11px;
+   top: 50%;
+   translate: 0 -70%;
+   padding: 4px;
+   transition: translate 0.2s;
+   transition: all 0.2s ease-out; /* Dùng all để tránh giật */
+   pointer-events: none;
+}
