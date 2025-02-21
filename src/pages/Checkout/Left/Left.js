@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -17,6 +17,70 @@ function Left() {
    });
 
    const [errors, setErrors] = useState({});
+
+   // State to save city, district, and ward list
+   const [cities, setCities] = useState([]);
+   const [districts, setDistricts] = useState([]);
+   const [wards, setWards] = useState([]);
+
+   // State to save the selected value
+   const [selectedCity, setSelectedCity] = useState('');
+   const [selectedDistrict, setSelectedDistrict] = useState('');
+   const [selectedWard, setSelectedWard] = useState('');
+
+   // Get a list of cities
+   useEffect(() => {
+      const fetchCities = async () => {
+         try {
+            const response = await axios.get(`https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1`);
+            setCities(response.data.data.data);
+            console.log(response.data.data.data);
+         } catch (error) {
+            console.log(error);
+         }
+      };
+      fetchCities();
+   }, []);
+
+   // Get a list of districts when a city is selected
+   useEffect(() => {
+      if (!selectedCity) return;
+
+      const fetchDistricts = async () => {
+         try {
+            const response = await axios.get(
+               `https://vn-public-apis.fpo.vn/districts/getByProvince?provinceCode=${selectedCity}&limit=-1`,
+            );
+            setDistricts(response.data.data.data);
+            setSelectedDistrict('');
+         } catch (error) {
+            console.log(error);
+         }
+      };
+
+      fetchDistricts();
+   }, [selectedCity]);
+
+   // Get a wards list when a district is selected
+   useEffect(() => {
+      if (!selectedDistrict) return;
+
+      const fetchWards = async () => {
+         try {
+            const response = await axios.get(
+               `https://vn-public-apis.fpo.vn/wards/getByDistrict?districtCode=${selectedDistrict}&limit=-1`,
+            );
+            setWards(response.data.data.data);
+            setSelectedWard('');
+         } catch (error) {
+            console.log(error);
+         }
+      };
+
+      fetchWards();
+   }, [selectedDistrict]);
+
+   useEffect(() => {}, []);
 
    const validationRules = {
       email: {
@@ -44,7 +108,7 @@ function Left() {
          required: 'Vui lòng nhập địa chỉ giao hàng của bạn',
       },
       city: {
-         required: 'Vui lòng chọn Thành phố/Tinh',
+         required: 'Vui lòng chọn TP/Tỉnh',
       },
       district: {
          required: 'Vui lòng chọn Quận/Huyện',
@@ -96,12 +160,14 @@ function Left() {
       return newErrors;
    };
 
+   // Chủ yếu để thay đổi trang thái lỗi khi người dùng nhập dữ liệu
    const handleInputChange = async (e) => {
       const { name, value } = e.target;
       setFormData((prev) => ({ ...prev, [name]: value }));
       setErrors((prev) => ({ ...prev, [name]: '' })); // Reset lỗi của field hiện tại
    };
 
+   // Chủ yếu để xét xem có lỗi hiện ra không khi blur
    const handleBlur = async (e) => {
       const { name, value } = e.target;
       const error = await validateField(name, value);
@@ -160,12 +226,12 @@ function Left() {
          <hr className="border-t border-solid border-[#d3d7da] mb-10"></hr>
 
          <h2 className="text-3xl font-semibold mb-10">ĐỊA CHỈ</h2>
-         {['fullName', 'phoneNumber', 'address'].map((field) => (
-            <div key={field} className="mb-10">
+         {['fullName', 'phoneNumber', 'address'].map((field, index) => (
+            <div key={field.id} className="mb-10">
                <div className={cx('box-info', 'relative')}>
                   <input
                      className={cx(
-                        'w-full border border-solid border-[#767677] p-5 mb-3',
+                        'w-full border border-solid border-[#767677] p-5 mb-2',
                         errors[field] ? 'input-form-wrong' : 'input-form-correct',
                      )}
                      placeholder=""
@@ -189,29 +255,82 @@ function Left() {
          ))}
 
          <div className="flex gap-x-4">
-            {['city', 'district', 'ward'].map((field) => (
-               <div className="flex flex-col w-full">
-                  <select
-                     className={cx(
-                        'w-full border border-solid border-[#767677] p-5',
-                        errors[field] ? 'input-form-wrong' : 'input-form-correct',
-                     )}
-                     name={field}
-                     value={formData[field]}
-                     onChange={handleInputChange}
-                     id={field}
-                     onBlur={(e) => handleBlur(e)}
-                     required
-                  >
-                     <option>
-                        {field === 'city' && 'Thành phố/Tỉnh'}
-                        {field === 'district' && 'Quận'}
-                        {field === 'ward' && 'Phường'}
+            {/* Dropdown Thành phố */}
+            <div className=" flex-col w-1/3">
+               <select
+                  className={cx(
+                     'w-full border border-solid border-[#767677] p-5 mb-2',
+                     errors['city'] ? 'input-form-wrong' : '',
+                  )}
+                  name="city"
+                  value={selectedCity}
+                  onChange={(e) => {
+                     setSelectedCity(e.target.value);
+                     setErrors((prev) => ({ ...prev, city: '' }));
+                  }}
+                  // onChange={handleInputChange}
+                  onBlur={(e) => handleBlur(e)}
+               >
+                  <option value="">Chọn Thành phố</option>
+                  {cities.map((city) => (
+                     <option key={city.code} value={city.code}>
+                        {city.name_with_type}
                      </option>
-                  </select>
-                  {errors[field] && <span className={cx('form-message')}>{errors[field]}</span>}
-               </div>
-            ))}
+                  ))}
+               </select>
+               {errors['city'] && <span className={cx('form-message')}>{errors['city']}</span>}
+            </div>
+
+            {/* Dropdown Quận */}
+
+            <div className=" flex-col w-1/3">
+               <select
+                  className={cx(
+                     'w-full border border-solid border-[#767677] p-5 mb-2',
+                     errors['district'] ? 'input-form-wrong' : '',
+                  )}
+                  name="district"
+                  value={selectedDistrict}
+                  onChange={(e) => {
+                     setSelectedDistrict(e.target.value);
+                     setErrors((prev) => ({ ...prev, district: '' }));
+                  }}
+                  onBlur={(e) => handleBlur(e)}
+               >
+                  <option value="">Chọn Quận/Huyện</option>
+                  {districts.map((district) => (
+                     <option key={district.code} value={district.code}>
+                        {district.name_with_type}
+                     </option>
+                  ))}
+               </select>
+               {errors['district'] && <span className={cx('form-message')}>{errors['district']}</span>}
+            </div>
+
+            {/* Dropdown ward */}
+            <div className=" flex-col w-1/3">
+               <select
+                  className={cx(
+                     'w-full border border-solid border-[#767677] p-5 mb-2',
+                     errors['ward'] ? 'input-form-wrong' : '',
+                  )}
+                  name='ward'
+                  value={selectedWard}
+                  onChange={(e) => {
+                     setSelectedWard(e.target.value);
+                     setErrors((prev) => ({ ...prev, ward: '' }));
+                  }}
+                  onBlur={(e) => handleBlur(e)}
+               >
+                  <option value="">Chọn Phường/Xã</option>
+                  {wards.map((ward) => (
+                     <option key={ward.code} value={ward.code}>
+                        {ward.name_with_type}
+                     </option>
+                  ))}
+               </select>
+               {errors['ward'] && <span className={cx('form-message')}>{errors['ward']}</span>}
+            </div>
          </div>
 
          <div className="flex items-center justify-between mt-14">
@@ -227,3 +346,4 @@ function Left() {
 }
 
 export default Left;
+

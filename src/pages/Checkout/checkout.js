@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './Checkout.module.scss';
 import Left from './Left/Left';
-import Right from './Right/Right';
+import Right from './Right/Right';  
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +16,7 @@ function CheckoutPage() {
                <Left />
             </div>
 
-            {/* Right */}
+            {/* Right */}  
             <div className="col-span-6 ml-60">
                <Right />
             </div>
