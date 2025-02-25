@@ -12,7 +12,7 @@ function CheckoutPage() {
          <h1 className="text-5xl font-semibold text-center mb-32">THANH TOÁN</h1>
          <div className="grid grid-cols-12">
             {/* Left */}
-            <div className="col-span-6 mr-24">
+            <div className="col-span-6 mr-20">
                <Left />
             </div>
 

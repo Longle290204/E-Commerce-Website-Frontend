@@ -203,21 +203,20 @@ function Left() {
             <div className="relative">
                <input
                   className={cx(
-                     'w-full border border-solid border-[#767677] p-5',
+                     'w-full border border-solid border-[#767677] p-5 mb-3',
                      errors['email'] ? 'input-form-wrong' : 'input-form-correct',
                   )}
                   placeholder=""
                   type="email"
                   id="email"
                   name="email"
-                  // value="email"
+                  value={formData.email}
                   onChange={handleInputChange}
                   onBlur={(e) => handleBlur(e)}
                   required
                />
                <label htmlFor="email" className={cx('label-name', 'absolute block text-gray-600 text-2xl mb-1')}>
                   Email
-                  <span>*</span>
                </label>
             </div>
             {errors['email'] && <span className={cx('form-message')}>{errors['email']}</span>}
@@ -231,7 +230,7 @@ function Left() {
                <div className={cx('box-info', 'relative')}>
                   <input
                      className={cx(
-                        'w-full border border-solid border-[#767677] p-5 mb-2',
+                        'w-full border border-solid border-[#767677] p-5 mb-3',
                         errors[field] ? 'input-form-wrong' : 'input-form-correct',
                      )}
                      placeholder=""
@@ -247,7 +246,6 @@ function Left() {
                      {field === 'fullName' && 'Họ và tên'}
                      {field === 'phoneNumber' && 'Số điện thoại'}
                      {field === 'address' && 'Địa chỉ'}
-                     <span>*</span>
                   </label>
                </div>
                {errors[field] && <span className={cx('form-message')}>{errors[field]}</span>}
@@ -259,7 +257,7 @@ function Left() {
             <div className=" flex-col w-1/3">
                <select
                   className={cx(
-                     'w-full border border-solid border-[#767677] p-5 mb-2',
+                     'w-full border border-solid border-[#767677] p-5 mb-3',
                      errors['city'] ? 'input-form-wrong' : '',
                   )}
                   name="city"
@@ -286,7 +284,7 @@ function Left() {
             <div className=" flex-col w-1/3">
                <select
                   className={cx(
-                     'w-full border border-solid border-[#767677] p-5 mb-2',
+                     'w-full border border-solid border-[#767677] p-5 mb-3',
                      errors['district'] ? 'input-form-wrong' : '',
                   )}
                   name="district"
@@ -311,10 +309,10 @@ function Left() {
             <div className=" flex-col w-1/3">
                <select
                   className={cx(
-                     'w-full border border-solid border-[#767677] p-5 mb-2',
+                     'w-full border border-solid border-[#767677] p-5 mb-3',
                      errors['ward'] ? 'input-form-wrong' : '',
                   )}
-                  name='ward'
+                  name="ward"
                   value={selectedWard}
                   onChange={(e) => {
                      setSelectedWard(e.target.value);
@@ -346,4 +344,3 @@ function Left() {
 }
 
 export default Left;
-

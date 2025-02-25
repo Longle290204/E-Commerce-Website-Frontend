@@ -68,7 +68,7 @@ function Right() {
          <div className="flex justify-between items-start mt-7 mb-10">
             <div>
                <strong>Tổng</strong>
-               <p className="text-gray-500 ">(Đã bao gồm thuế 1.225.926₫)</p>
+               <p className="text-gray-600 text-2xl">(Đã bao gồm thuế 1.225.926₫)</p>
             </div>
             <strong>16.550.000₫</strong>
          </div>
@@ -77,7 +77,11 @@ function Right() {
             <input className="w-full border border-solid border-[#767677] p-5 mb-3" type="text" placeholder="" />
             <label className={cx('label-name', 'absolute block text-gray-600 text-2xl mb-1')}>Nhập mã khuyến mãi</label>
 
-            <img className={cx('plus-icon', 'absolute w-10 h-10 font-bold cursor-pointer')} src={images.plus} alt="plus" />
+            <img
+               className={cx('plus-icon', 'absolute w-10 h-10 font-bold cursor-pointer')}
+               src={images.plus}
+               alt="plus"
+            />
          </div>
       </>
    );
