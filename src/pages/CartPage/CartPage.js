@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import axiosInstance from '../../api/axiosInstance';
 import images from '../../assets/images/image';
-import PropTypes from 'prop-types';
+import styles from './CartPage.module.scss';
+import classNames from 'classnames/bind';
 
-function CartPage(props) {
+const cx = classNames.bind(styles);
+
+function CartPage() {
    const cart = useContext(CartContext);
 
    const [countCartItem, setCountCartItem] = useState(0);
@@ -14,6 +17,8 @@ function CartPage(props) {
    // Input value quantity
    const [inputValue, setInputValue] = useState(1);
 
+
+   // Get data cart
    useEffect(() => {
       const axiosProducts = async () => {
          const accessToken = localStorage.getItem('accessToken');
@@ -32,6 +37,7 @@ function CartPage(props) {
 
       axiosProducts();
    }, [countCartItem]);
+
 
    const handleDeleteItemCart = async (productId) => {
       try {
@@ -53,8 +59,8 @@ function CartPage(props) {
 
    return (
       <div className="container mt-20">
-         {/* Right */}
          <div className="grid grid-cols-12">
+            {/* Right */}
             <div className="col-span-7">
                <div className="mb-20">
                   <h1 className="text-[3.6rem] text-[#000] font-semibold mb-2">GIỎ HÀNG CỦA BẠN</h1>
@@ -65,73 +71,85 @@ function CartPage(props) {
                      Các mặt hàng trong giỏ hàng của bạn không được bảo lưu — hãy kiểm tra ngay để đặt hàng.
                   </p>
                </div>
-               <div>
-                  <div>
-                     {cart.cartItems.map((item, key) => (
-                        <article key={key} className="flex border border-solid border-[#808080] mb-10" aria-label="Cart Item">
-                           <Link to="/">
-                              <img
-                                 className="w-[200px] h-[200px] object-cover"
-                                 src={item.product.mainImage}
-                                 alt={item.product.name}
-                              />
-                           </Link>
-                           <div>
-                              <div className="flex flex-col justify-between p-8 h-full">
-                                 <div className="flex">
-                                    <p>Giày Thể Thao Nam xanh Biti’s Hunter X LiteDash - Original Edition 2K24</p>
-                                 </div>
 
-                                 <div className="flex justify-between">
-                                    <p>
-                                       KÍCH CỠ: <span>7UK</span>
-                                    </p>
-                                    <span>1.200.000 VNĐ</span>
-                                 </div>
-                                 <div className="flex justify-between">
-                                    <div className="flex">
-                                       <button
-                                          className="w-14 border-t border-b border-l border-[#808080]"
-                                          data-type="minus"
-                                          onClick={() => handleQuantity('minus')}
-                                       >
-                                          -
-                                       </button>
-                                       <input
-                                          type="text"
-                                          id="quantity"
-                                          name="quantity"
-                                          value={inputValue}
-                                          min="1"
-                                          onChange={(e) => {
-                                             const value = Number(e.target.value);
-                                             setInputValue(value >= 1 ? value : ''); // Không cho nhập số nhỏ hơn 1
-                                          }}
-                                          className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
+               {/* Phần sản phẩm */}
+               <div>
+                  {cart.cartItems.map((item, key) => (
+                     <article
+                        key={key}
+                        className="flex border border-solid border-[#808080] mb-10"
+                        aria-label="Cart Item"
+                     >
+                        <Link to="/">
+                           <img
+                              className="w-[200px] h-[200px] object-cover"
+                              src={item.product.mainImage}
+                              alt={item.product.name}
+                           />
+                        </Link>
+                        <div>
+                           <div className="flex flex-col justify-between p-8 h-full">
+                              <div className="flex">
+                                 <p>Giày Thể Thao Nam xanh Biti’s Hunter X LiteDash - Original Edition 2K24</p>
+                              </div>
+
+                              <div className="flex justify-between">
+                                 <p>
+                                    KÍCH CỠ: <span>7UK</span>
+                                 </p>
+                                 <span>1.200.000 VNĐ</span>
+                              </div>
+                              <div className="flex justify-between">
+                                 <div className="flex">
+                                    <button
+                                       className="w-14 border-t border-b border-l border-[#808080]"
+                                       data-type="minus"
+                                       onClick={() => handleQuantity('minus')}
+                                    >
+                                       -
+                                    </button>
+                                    <input
+                                       type="text"
+                                       id="quantity"
+                                       name="quantity"
+                                       value={inputValue}
+                                       min="1"
+                                       onChange={(e) => {
+                                          const value = Number(e.target.value);
+                                          setInputValue(value >= 1 ? value : ''); // Không cho nhập số nhỏ hơn 1
+                                       }}
+                                       className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
                                   [&::-webkit-outer-spin-button]:appearance-none 
                                   [appearance:textfield]"
-                                       />
-                                       <button
-                                          className="w-14 border-t border-b border-r border-[#808080]"
-                                          data-type="plus"
-                                          onClick={() => handleQuantity('plus')}
-                                       >
-                                          +
-                                       </button>
-                                    </div>
+                                    />
                                     <button
-                                       className="hover:underline transform transition-transform duration-200 hover:scale-105"
-                                       onClick={() => handleDeleteItemCart(item.id)}
-                                       aria-label={`Remove ${item.product.name} from cart`}
+                                       className="w-14 border-t border-b border-r border-[#808080]"
+                                       data-type="plus"
+                                       onClick={() => handleQuantity('plus')}
                                     >
-                                       Xóa
+                                       +
                                     </button>
                                  </div>
+                                 <button
+                                    className="hover:underline transform transition-transform duration-200 hover:scale-105"
+                                    onClick={() => handleDeleteItemCart(item.id)}
+                                    aria-label={`Remove ${item.product.name} from cart`}
+                                 >
+                                    Xóa
+                                 </button>
                               </div>
                            </div>
-                        </article>
-                     ))}
-                  </div>
+                        </div>
+                     </article>
+                  ))}
+               </div>
+
+               <div>
+                  <label className="block">Ghi chú</label>
+                  <textarea
+                     className="placeholder:font-sans placeholder:text-gray-600 placeholder:text-2xl w-full h-[150px] bg-[#f4f4f4] rounded-2xl p-6 mt-4 resize-y overflow-auto"
+                     placeholder="Vui lòng nhập ghi chú của bạn..."
+                  ></textarea>
                </div>
             </div>
 
@@ -151,17 +169,28 @@ function CartPage(props) {
                <div className="flex justify-between items-start mt-7 mb-20">
                   <div>
                      <strong>Tổng</strong>
-                     <p className="text-gray-500 ">(Đã bao gồm thuế 1.225.926₫)</p>
+                     <p className="text-gray-600 text-2xl">(Đã bao gồm thuế 1.225.926₫)</p>
                   </div>
                   <strong>16.550.000₫</strong>
                </div>
 
-               <div className="flex items-center p-5 bg-white justify-between border border-solid border-[#808080]">
-                  <input className="border-none outline-none" type="text" placeholder="Nhập mã khuyễn mãi" />
-                  <img className="w-10 h-10 font-bold cursor-pointer" src={images.plus} alt="plus" />
+               <div className="relative flex items-center bg-white justify-between">
+                  <input className="w-full border border-solid border-[#767677] p-5 mb-3" type="text" placeholder="" />
+                  <label className={cx('label-name', 'absolute block text-gray-600 text-2xl mb-1')}>
+                     Nhập mã khuyến mãi
+                  </label>
+
+                  <img
+                     className={cx('plus-icon', 'absolute w-10 h-10 font-bold cursor-pointer')}
+                     src={images.plus}
+                     alt="plus"
+                  />
                </div>
 
-               <div className="flex p-6 bg-black items-center justify-between mt-14">
+               <Link
+                  to="/checkout"
+                  className="flex p-6 bg-black items-center justify-between mt-14 hover:bg-gray-900 cursor-pointer"
+               >
                   <button className="text-white text-2xl">THANH TOÁN</button>
                   <svg
                      xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +202,7 @@ function CartPage(props) {
                   >
                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
                   </svg>
-               </div>
+               </Link>
 
                <p className="text-[1.3rem] font-semibold mt-14 mb-8">PHƯƠNG THỨC THANH TOÁN ĐƯỢC CHẤP NHẬN</p>
                <div className="flex">
