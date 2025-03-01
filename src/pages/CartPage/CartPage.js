@@ -15,8 +15,7 @@ function CartPage() {
    const [countCartItem, setCountCartItem] = useState(0);
 
    // Input value quantity
-   const [inputValue, setInputValue] = useState(1);
-
+   const [quantityValue, setQuantityValue] = useState([]);
 
    // Get data cart
    useEffect(() => {
@@ -38,23 +37,57 @@ function CartPage() {
       axiosProducts();
    }, [countCartItem]);
 
+   // Get data quantity
+   const axiosQuantity = async () => {
+      try {
+         const response = await axiosInstance.get(`http://localhost:3002/cart/get-all-quantity`, {
+            headers: {
+               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+         });
+         console.log('quantity', response);
 
+         setQuantityValue(response.data);
+      } catch (error) {}
+   };
+
+   useEffect(() => {
+      axiosQuantity();
+   }, []);
+
+   const handleIncrease = async (id) => {
+      await axios.post(
+         `http://localhost:3002/cart/increase-quantity/${id}`,
+         {},
+         {
+            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+         },
+      );
+
+      // Cập nhật state để useEffect được gọi lại
+      axiosQuantity();
+   };
+
+   const handleDecrease = async (id) => {
+      await axios.post(
+         `http://localhost:3002/cart/decrease-quantity`,
+         { productId: id },
+         {
+            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+         },
+      );
+
+      axiosQuantity();
+   };
+
+   // Delete item
    const handleDeleteItemCart = async (productId) => {
       try {
-         await axios.delete(`http://localhost:3002/cart/${productId}`);
+         await axiosInstance.delete(`/cart/${productId}`);
          setCountCartItem((prevCount) => prevCount + 1);
       } catch (error) {
          console.log(error.message);
       }
-   };
-
-   // Quantity of products
-   const handleQuantity = (method) => {
-      setInputValue((prev) => {
-         if (method === 'plus') return prev === '' ? 1 : prev + 1;
-         if (method === 'minus') return prev > 1 ? prev - 1 : prev;
-         return prev;
-      });
    };
 
    return (
@@ -99,12 +132,14 @@ function CartPage() {
                                  </p>
                                  <span>1.200.000 VNĐ</span>
                               </div>
+
                               <div className="flex justify-between">
+                                 {/* Increase and decrease Quantity */}
                                  <div className="flex">
                                     <button
                                        className="w-14 border-t border-b border-l border-[#808080]"
                                        data-type="minus"
-                                       onClick={() => handleQuantity('minus')}
+                                       onClick={() => handleDecrease(item.product.id)}
                                     >
                                        -
                                     </button>
@@ -112,12 +147,11 @@ function CartPage() {
                                        type="text"
                                        id="quantity"
                                        name="quantity"
-                                       value={inputValue}
-                                       min="1"
-                                       onChange={(e) => {
-                                          const value = Number(e.target.value);
-                                          setInputValue(value >= 1 ? value : ''); // Không cho nhập số nhỏ hơn 1
-                                       }}
+                                       value={
+                                          quantityValue.find((data) => data.productId === item.product.id)?.quantity ??
+                                          1
+                                       }
+                                       readOnly
                                        className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
                                   [&::-webkit-outer-spin-button]:appearance-none 
                                   [appearance:textfield]"
@@ -125,7 +159,7 @@ function CartPage() {
                                     <button
                                        className="w-14 border-t border-b border-r border-[#808080]"
                                        data-type="plus"
-                                       onClick={() => handleQuantity('plus')}
+                                       onClick={() => handleIncrease(item.product.id)}
                                     >
                                        +
                                     </button>
@@ -235,7 +269,5 @@ function CartPage() {
       </div>
    );
 }
-
-CartPage.propTypes = {};
 
 export default CartPage;
