@@ -14,9 +14,6 @@ function CartPage() {
 
    const [countCartItem, setCountCartItem] = useState(0);
 
-   // Input value quantity
-   const [quantityValue, setQuantityValue] = useState([]);
-
    // Get data cart
    useEffect(() => {
       const axiosProducts = async () => {
@@ -28,7 +25,10 @@ function CartPage() {
             },
          });
 
+         console.log('data test', response.data);
+         // Set data
          cart.setCartItems(response.data);
+
          // Đếm số phần tử trong mảng cartItems và set count
          const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
          setCountCartItem(countItems);
@@ -37,47 +37,46 @@ function CartPage() {
       axiosProducts();
    }, [countCartItem]);
 
-   // Get data quantity
-   const axiosQuantity = async () => {
-      try {
-         const response = await axiosInstance.get(`http://localhost:3002/cart/get-all-quantity`, {
-            headers: {
-               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-         });
-         console.log('quantity', response);
-
-         setQuantityValue(response.data);
-      } catch (error) {}
+   // Update quantity
+   const updateQuantity = (id, change) => {
+      cart.setCartItems((prev) =>
+         prev.map((item) => (item.product.id === id ? { ...item, quantity: item.quantity + change } : item)),
+      );
    };
 
-   useEffect(() => {
-      axiosQuantity();
-   }, []);
-
    const handleIncrease = async (id) => {
-      await axios.post(
-         `http://localhost:3002/cart/increase-quantity/${id}`,
-         {},
-         {
-            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
-         },
-      );
+      // Cập nhật state để hiển thị ngay lập tức khi click
+      updateQuantity(id, 1);
+      try {
+         await axios.post(
+            `http://localhost:3002/cart/increase-quantity/${id}`,
+            {},
+            {
+               headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+            },
+         );
+      } catch (error) {
+         updateQuantity(id, -1);
+      }
 
       // Cập nhật state để useEffect được gọi lại
-      axiosQuantity();
    };
 
    const handleDecrease = async (id) => {
-      await axios.post(
-         `http://localhost:3002/cart/decrease-quantity`,
-         { productId: id },
-         {
-            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
-         },
-      );
+      // Cập nhật state để hiển thị ngay lập tức khi click
+      updateQuantity(id, -1);
 
-      axiosQuantity();
+      try {
+         await axios.post(
+            `http://localhost:3002/cart/decrease-quantity`,
+            { productId: id },
+            {
+               headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+            },
+         );
+      } catch (error) {
+         updateQuantity(id, 1);
+      }
    };
 
    // Delete item
@@ -147,10 +146,7 @@ function CartPage() {
                                        type="text"
                                        id="quantity"
                                        name="quantity"
-                                       value={
-                                          quantityValue.find((data) => data.productId === item.product.id)?.quantity ??
-                                          1
-                                       }
+                                       value={item.quantity}
                                        readOnly
                                        className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
                                   [&::-webkit-outer-spin-button]:appearance-none 
