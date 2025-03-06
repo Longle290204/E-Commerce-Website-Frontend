@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 import { Card, CardMedia, Typography, Button, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import hunterwhite4 from '../../assets/images/hunterwhite4.webp';
-import hunterpink1 from '../../assets/images/hunterpink1.webp';
-import star from '../../assets/images/star.svg';
+import { CartContext } from '../../Context/CartContext';
 
-function ProductInfo(props) {
+function ProductInfo({ id }) {
+   // Option color
+   const [optionColor, setOptionColor] = useState('');
+
+   // Input value quantity
+   const [inputValue, setInputValue] = useState(1);
+
    // Sizes
    const sizes = [36, 37, 38, 39, 40, 41, 42, 43];
    const [activeSize, setActiveSize] = useState(sizes[0]);
 
-   // Input value quantity
-   const [inputValue, setInputValue] = useState(1);
+   // Context
+   const cart = useContext(CartContext);
 
    const handleQuantity = (method) => {
       setInputValue((prev) => {
@@ -22,10 +27,34 @@ function ProductInfo(props) {
       });
    };
 
-   const images = [
-      { image: hunterwhite4, title: 'Trắng' },
-      { image: hunterpink1, title: 'Hồng' },
-   ];
+   // Get option color
+   useEffect(() => {
+      const fetchAxios = async () => {
+         const response = await axios.get(`http://localhost:3002/products/${id}`);
+         console.log('option color', response.data);
+         setOptionColor(response.data);
+      };
+
+      fetchAxios();
+   }, []);
+
+   const handleAddToCart = async (productId) => {
+      const accessToken = localStorage.getItem('accessToken');
+
+      const response = await axios.post(
+         `http://localhost:3002/cart`,
+         {
+            productId,
+            quantity: 1,
+         },
+         {
+            headers: {
+               Authorization: `Bearer ${accessToken}`,
+            },
+         },
+      );
+      cart.addToCart(response.data);
+   };
 
    // Custom MUI theme
    const theme = createTheme({
@@ -75,19 +104,6 @@ function ProductInfo(props) {
             <Typography variant="h5" marginBottom={4} sx={{ fontSize: '2.8rem', fontWeight: '700' }}>
                Giày Sandal Nam NOVA SD-11012
             </Typography>
-            {/* ============= Đánh Giá ============= */}
-            {/* <Box display="flex" gap="15px">
-               <Typography variant="h5">
-                  <span>4.5</span>
-                  {Array.from({ length: 5 }).map((_, index) => (
-                     <img key={index} src={star} alt="star" />
-                  ))}
-               </Typography>
-               <span>|</span>
-               <Typography variant="h5">
-                  <BoldText>20</BoldText>Đánh Giá
-               </Typography>
-            </Box> */}
 
             {/* ============= Phần Giá ============= */}
             <Box
@@ -95,33 +111,21 @@ function ProductInfo(props) {
                sx={{
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'space-between',
                   gap: 2,
                   color: '#212529',
-                  // backgroundColor: '#fafafa',
-                  padding: '20px',
-                  borderTop: '1px solid #dee2e6',
-                  borderBottom: '1px solid #dee2e6',
                }}
             >
                <Typography
-                  variant="h3"
-                  color="error"
+                  variant="h4"
                   gap="15px"
-                  sx={{ display: 'flex', alignItems: 'center', fontWeight: '700' }}
+                  sx={{ display: 'flex', alignItems: 'center', color: '#ff3D00', fontWeight: '700' }}
                >
-                  327,750đ
+                  327,750 VNĐ
                </Typography>
-               <Typography
-                  variant="h5"
-                  sx={{
-                     padding: '5px',
-                     backgroundColor: '#990000',
-                     borderRadius: '5px',
-                     marginBottom: '0px',
-                     color: '#fff',
-                  }}
-               >
-                  Tiết kiệm 5%
+
+               <Typography variant="h5">
+                  <span style={{}}>Tình trạng:</span> <b>Còn hàng(2)</b>
                </Typography>
             </Box>
 
@@ -131,16 +135,15 @@ function ProductInfo(props) {
                   Màu sắc
                </Typography>
                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {images.map((src, index) => (
-                     <figure key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <CardMedia
-                           sx={{ width: 112, height: 112, objectFit: 'cover', borderRadius: '5px' }}
-                           component="img"
-                           image={src.image}
-                           alt={`hunterpink${index + 1}`}
-                        />
-                     </figure>
-                  ))}
+                  <figure style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                     <CardMedia
+                        sx={{ width: 112, height: 112, objectFit: 'cover', borderRadius: '5px' }}
+                        component="img"
+                        src={optionColor.mainImage}
+                        // image={optionColor.mainImage}
+                        alt="Black shoes"
+                     />
+                  </figure>
                </Box>
             </Box>
 
@@ -219,7 +222,12 @@ function ProductInfo(props) {
 
             {/* =============== Nút mua hàng =============== */}
             <Box display="flex" gap="20px" sx={{ marginTop: 5 }}>
-               <Button variant="contained" fullWidth sx={{ backgroundColor: '#fafafa', color: 'black' }}>
+               <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{ backgroundColor: '#fafafa', color: 'black' }}
+                  onClick={() => handleAddToCart(id)}
+               >
                   THÊM VÀO GIỎ HÀNG
                </Button>
                <Button variant="contained" fullWidth>
@@ -232,7 +240,7 @@ function ProductInfo(props) {
 }
 
 ProductInfo.propTypes = {
-   optionalNode: PropTypes.node,
+   id: PropTypes.node,
 };
 
 export default ProductInfo;
