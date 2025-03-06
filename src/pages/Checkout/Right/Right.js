@@ -16,15 +16,17 @@ function Right() {
       const axiosProducts = async () => {
          const accessToken = localStorage.getItem('accessToken');
 
-         const response = await axiosInstance.get(`http://localhost:3002/cart`, {
+         const response = await axiosInstance.get(`/cart`, {
             headers: {
                Authorization: `Bearer ${accessToken}`,
             },
          });
+         console.log('cartItem', response.data);
+         
 
-         cart.setCartItems(response.data);
+         cart.setCart(response.data);
          // Đếm số phần tử trong mảng cartItems và set count
-         const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
+         const countItems = cart.cart.cartItems.reduce((countItem) => countItem + 1, 0);
          setCountCartItem(countItems);
       };
 
@@ -33,7 +35,7 @@ function Right() {
 
    return (
       <>
-         {cart.cartItems.map((item, key) => (
+         {cart.cart.cartItems.map((item, key) => (
             <article key={key} className="flex mb-5" aria-label="Cart Item">
                <div className="w-[120px] h-[120px] flex-none">
                   <img className="w-full h-full object-cover" src={item.product.mainImage} alt={item.product.name} />

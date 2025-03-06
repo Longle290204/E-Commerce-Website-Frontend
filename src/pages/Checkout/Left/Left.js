@@ -226,7 +226,7 @@ function Left() {
 
          <h2 className="text-3xl font-semibold mb-10">ĐỊA CHỈ</h2>
          {['fullName', 'phoneNumber', 'address'].map((field, index) => (
-            <div key={field.id} className="mb-10">
+            <div key={index} className="mb-10">
                <div className={cx('box-info', 'relative')}>
                   <input
                      className={cx(
