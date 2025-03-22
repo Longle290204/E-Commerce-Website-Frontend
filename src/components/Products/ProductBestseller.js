@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { CartContext } from '../../Context/CartContext';
-import images from '../../assets/images/image';
 import { ReactComponent as HeartIcon } from '../../assets/svg/heart.svg';
 import { useNavigate } from 'react-router-dom';
 import useTokenValidation from '../../hooks/useTokenValidation';
@@ -9,7 +8,6 @@ import { useAxiosInstance } from '../../api/axiosInstance';
 import isTokenValid from '../../guards/IsTokenValid';
 
 function ProductBestseller({ products }) {
-   const [isActive, setIsActive] = useState(false);
    const cart = useContext(CartContext);
    const navigate = useNavigate();
    const validateToken = useTokenValidation();
