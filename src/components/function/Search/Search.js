@@ -2,14 +2,13 @@ import { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Search.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faSpinner, faSearch } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import ProductSearch from '../ProductSearch/ProductSearch';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { Wrapper as PopperWrapper } from '../../../layouts/components/Popper';
 import useDebounce from '../../../hooks/useDebounce';
 import axios from 'axios';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -17,97 +16,74 @@ function Search() {
    const [searchValue, setSearchValue] = useState('');
    const [searchResult, setSearchResult] = useState([]);
    const [showResult, setShowResult] = useState(false);
-   const [lastScrollTop, setLastScrollTop] = useState(0);
    const [loading, setLoading] = useState(false);
    const inputRef = useRef(null);
 
-   const debounced = useDebounce(searchValue, 500);
+   const debouncedSearch = useDebounce(searchValue, 500);
 
-   // Bắt sự kiện keydown để ẩn kết quả search
+   // Ẩn kết quả tìm kiếm
+   const handleHideResult = () => {
+      setShowResult(false);
+      if (inputRef.current) {
+         inputRef.current.blur();
+      }
+   };
+
+   // Xử lý khi người dùng nhấn phím ESC
    useEffect(() => {
-      // Bắt sự kiện keydown để ẩn kết quả search
       const handleKeyDown = (e) => {
          if (e.key === 'Escape') {
-            setShowResult(false);
-            // Bỏ active khỏi input khi ấn ESC
-            if (inputRef.current) {
-               inputRef.current.blur();
-            }
-         }
-      };
-
-      // Bắt sự kiện keydown
-      document.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-         document.removeEventListener('keydown', handleKeyDown);
-      };
-   }, []);
-
-   // Bắt sự kiện scroll để ẩn kết quả search
-   useEffect(() => {
-      const handleScroll = () => {
-         const currentScroll = window.scrollY || document.documentElement.scrollTop;
-
-         if (currentScroll > 300) {
             handleHideResult();
          }
-         setLastScrollTop(currentScroll <= 0 ? 0 : currentScroll);
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+   }, []);
+
+   // Ẩn kết quả tìm kiếm khi cuộn trang
+   useEffect(() => {
+      const handleScroll = () => {
+         if (window.scrollY > 300) {
+            handleHideResult();
+         }
       };
 
       document.addEventListener('scroll', handleScroll);
+      return () => document.removeEventListener('scroll', handleScroll);
+   }, []);
 
-      return () => {
-         window.removeEventListener('scroll', handleScroll);
-      };
-   }, [lastScrollTop]);
-
-   // Lấy dữ liệu từ API
+   // Gọi API tìm kiếm
    useEffect(() => {
-      if (!debounced.trim()) {
+      if (!debouncedSearch.trim()) {
          setSearchResult([]);
          return;
       }
-      setLoading(true);
 
-      const axiosSearch = async () => {
+      const fetchSearchResults = async () => {
+         setLoading(true);
          try {
-            const response = await axios.get(`http://localhost:3002/products?search=${searchValue}`);
+            const response = await axios.get(`http://localhost:3002/products?search=${debouncedSearch}`);
             setSearchResult(response.data);
-            console.log('searchValue', response.data);
-
-            setLoading(false);
          } catch (error) {
-            setLoading(false);
+            console.error('Error fetching search results:', error);
          }
+         setLoading(false);
       };
 
-      axiosSearch();
-   }, [debounced]);
+      fetchSearchResults();
+   }, [debouncedSearch]);
 
-   // Ẩn kết quả search
-   const handleHideResult = () => {
-      setShowResult(false);
-      inputRef.current.blur();
-   };
-
-   // Để tróng kết quả search khi component được mount
-   useEffect(() => {
-      setTimeout(() => {
-         setSearchResult([]);
-      }, 0);
-   }, []);
-
-   // Bỏ active khỏi input khi ấn space
-   const handleSpace = (e) => {
-      const searchValue = e.target.value;
-      if (!searchValue.startsWith(' ')) {
-         setSearchValue(searchValue);
+   // Không cho phép nhập khoảng trắng đầu dòng
+   const handleInputChange = (e) => {
+      const value = e.target.value;
+      if (!value.startsWith(' ')) {
+         setSearchValue(value);
       }
    };
 
    return (
-      <div className={cx('box-search', 'relative w-2/3 ml-auto mr-auto mt-6')}>
+      <div className={cx('box-search', 'relative w-2/3 mx-auto mt-6')}>
          <HeadlessTippy
             appendTo={() => document.body}
             interactive
@@ -116,7 +92,7 @@ function Search() {
             delay={[800, 0]}
             placement="bottom"
             render={(attrs) => (
-               <div className={cx('search-result', 'w-3/3 ml-auto mr-auto')} tabIndex="-1" {...attrs}>
+               <div className={cx('search-result', 'w-3/3 mx-auto')} tabIndex="-1" {...attrs}>
                   <PopperWrapper>
                      {searchResult.map((result, index) => (
                         <ProductSearch key={index} data={result} />
@@ -134,35 +110,29 @@ function Search() {
                   className={cx('placeholder:text-[#000000]')}
                   spellCheck={false}
                   autoComplete="new-password"
-                  onChange={handleSpace}
+                  onChange={handleInputChange}
                   onFocus={() => setShowResult(true)}
                />
 
-               {/* Nếu không có giá trị search và không đang loading thì hiển thị nút clear */}
-               {!!searchValue && !loading && (
+               {/* Nút clear */}
+               {searchValue && !loading && (
                   <button
                      className={cx('clear')}
                      onClick={() => {
                         setSearchValue('');
-                        inputRef.current.focus();
                         setSearchResult([]);
+                        inputRef.current?.focus();
                      }}
                   >
-                     <FontAwesomeIcon
-                        icon={faCircleXmark}
-                        style={{
-                           color: 'rgba(166, 167, 171,1)',
-                        }}
-                     />
+                     <FontAwesomeIcon icon={faCircleXmark} style={{ color: 'rgba(166, 167, 171,1)' }} />
                   </button>
                )}
-               {/* Nếu đang loading thì hiển thị icon loading */}
-               {!!loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
+
+               {/* Icon loading */}
+               {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
 
                <button className={cx('search-btn')}>
-                  <div className={cx('search-icon')}>
-                     <FontAwesomeIcon icon={faSearch} />
-                  </div>
+                  <FontAwesomeIcon icon={faSearch} />
                </button>
             </div>
          </HeadlessTippy>
@@ -170,8 +140,8 @@ function Search() {
    );
 }
 
-ProductSearch.PropTypes = {
-   data: PropTypes.object,
+ProductSearch.propTypes = {
+   data: PropTypes.object.isRequired,
 };
 
 export default Search;
