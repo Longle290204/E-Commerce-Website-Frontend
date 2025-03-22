@@ -1,0 +1,115 @@
+.search-result {
+   width: 503px;
+}
+
+.search {
+   position: relative;
+   margin-top: 10px;
+   height: var(--search-height);
+   background: rgba(22, 24, 35, 0.06);
+   border-radius: 4px;
+   padding-left: 11px;
+   display: flex;
+   border: 1px solid transparent;
+   align-items: center;
+   justify-content: center;
+   input {
+      padding-right: 40px;
+      flex: 1;
+      height: fit-content;
+      font-size: 1.4rem;
+      color: #000000;
+      border: none;
+      font-weight: 400;
+      background-color: transparent;
+      outline: none;
+      caret-color: red;
+      :placeholder-shown {
+         color: #000000;
+      }
+   }
+
+   input:not(:placeholder-shown) ~ .search-btn {
+      color: rgba(22, 24, 35, 0.75);
+   }
+
+   &::after {
+      content: ' ';
+      position: absolute;
+      background-color: rgba(22, 24, 35, 0.12);
+      width: 1px;
+      height: calc(var(--search-height) - var(--search-top-space) * 2);
+      right: 51px;
+      top: var(--search-top-space);
+   }
+
+   &:focus-within {
+      border: 1px solid rgba(22, 24, 35, 0.2);
+   }
+
+   .search-btn {
+      color: rgb(166 167 171);
+      border: none;
+      width: 52px;
+      height: 100%;
+      outline: none;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+      font-size: 1.8rem;
+      &:hover {
+         background-color: var(--search-buttom-color);
+         cursor: pointer;
+         &:active {
+            background-color: rgba(209, 213, 224, 0.6);
+         }
+      }
+   }
+
+   &:hover {
+      border: 1px solid rgba(22, 24, 35, 0.2);
+      .search-btn {
+         color: rgba(22, 24, 35, 0.75);
+         background-color: var(--search-buttom-color);
+      }
+   }
+
+   &:hover ~ .search-icon {
+      color: rgba(22, 24, 35, 0.34);
+   }
+}
+
+.search-title {
+   color: rgba(22, 24, 35, 0.5);
+   height: 30px;
+   padding: 5px 4px;
+   font-size: 1.4rem;
+   line-height: 18px;
+   font-weight: 600;
+}
+
+.clear,
+.loading {
+   position: absolute;
+   right: 66px;
+}
+
+.loading {
+   animation: spiner 0.5s linear infinite;
+}
+
+@keyframes spiner {
+   from {
+      transform: rotate(0);
+   }
+   to {
+      transform: rotate(360deg);
+   }
+}
+
+.clear {
+   border: none;
+}
+
+.loading {
+   border: none;
+}
