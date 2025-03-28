@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
 import classNames from 'classnames/bind';
 import styles from './CreateProductAdmin.module.scss';
@@ -11,17 +11,31 @@ function CreateProductAdmin({ setCountProduct }) {
    const [imageURL, setImageURl] = useState(null);
    const [productName, setProductName] = useState('');
    const [productPrice, setProductPrice] = useState('');
+   const [status, setStatus] = useState('ACTIVE');
+   const [inputQuantity, setInputQuantity] = useState('');
+   const [discount, setDiscount] = useState('');
    const [categoryIds, setCategoryIds] = useState([]);
    // Cập nhật sản phẩm ngay khi tạo phía admin
 
-   const handleCreateProduct = async (e) => {
-      e.preventDefault();
+   const statusRef = useRef(null);
 
+   const handleCreateProduct = async (e) => {
+      setStatus('ACTIVE');
+
+      console.log('categoryIds', categoryIds);
+      e.preventDefault();
       const formData = new FormData();
       formData.append('image', imageURL);
       formData.append('name', productName);
-      formData.append('price', productPrice);
-      categoryIds.forEach((id) => formData.append('categoryId[]', id));
+      formData.append('price', Number(productPrice));
+      formData.append('status', status);
+      categoryIds.forEach((id, index) => formData.append(`categoryId[${index}]`, id));
+
+      for (const pair of formData.entries()) {
+         console.log(pair[0], pair[1]);
+      }
+
+      // categoryIds.forEach((id) => formData.append('categoryId[]', id));
       // FormData là một đối tượng trong JavaScript được sử dụng để xây dựng dữ liệu dưới dạng multipart/form-data.
       //  Đây là một định dạng đặc biệt cần thiết khi bạn muốn gửi cả file và dữ liệu text qua HTTP
       try {
@@ -39,9 +53,139 @@ function CreateProductAdmin({ setCountProduct }) {
       }
    };
 
+   const handleLabelClick = () => {
+      if (statusRef.current) {
+         statusRef.current.focus(); // Đảm bảo focus trước
+         const event = new MouseEvent('mousedown', {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+         });
+         statusRef.current.dispatchEvent(event); // Gửi sự kiện mousedown để mở dropdown
+      }
+   };
+
    return (
-      <form className={cx('form-admin-edit')} onSubmit={handleCreateProduct}>
-         <div data-testid="cypress-create_product">
+      <form className={cx('form-admin-edit', 'w-full')} onSubmit={handleCreateProduct}>
+         <div className="flex flex-col justify-between w-full gap-10">
+            {/* Tên sản phẩm  */}
+            <div className="flex flex-col w-full">
+               <label htmlFor="name-product">
+                  Tên sản phẩm<span style={{ color: 'red' }}>(*)</span>
+               </label>
+               <input
+                  className="border border-gray-300 rounded-md p-2"
+                  type="text"
+                  id="name-product"
+                  onChange={(e) => setProductName(e.target.value)}
+                  placeholder="Tên sản phẩm"
+                  required
+               />
+            </div>
+
+            <div className="flex justify-between  items-center w-full gap-10">
+               {/* Giá bán sản phẩm */}
+               <div className="flex flex-col w-1/3">
+                  <label htmlFor="price-product" className="line">
+                     Giá bán sản phẩm <span style={{ color: 'red' }}>(*)</span>
+                  </label>
+                  <input
+                     className={cx('input-price', 'border border-gray-300 rounded-md p-2')}
+                     type="text"
+                     id="price-product"
+                     name="price"
+                     onChange={(e) => setProductPrice(e.target.value)}
+                     placeholder="Giá bản sản phẩm"
+                     required
+                     style={{
+                        lineHeight: '1', // Không ảnh hưởng đến placeholder nhưng giúp đồng bộ input
+                     }}
+                  />
+               </div>
+
+               {/* Select category product */}
+               {/* <SelectProductCategory onCategoryChange={handleCategoryChange} /> */}
+
+               {/* Danh mục sản phẩm  */}
+               <div className="flex flex-col w-1/3">
+                  <label htmlFor="category-select" className="font-medium text-gray-700 cursor-pointer">
+                     Danh mục<span style={{ color: 'red' }}>(*)</span>
+                  </label>
+                  <div className="flex items-center h-14 w-full border border-gray-300 rounded-md">
+                     <CategorySelector id="category-select" onChangeCategoryIds={setCategoryIds} />
+                  </div>
+               </div>
+
+               {/* Trạng thái */}
+               <div className="flex flex-col w-1/3">
+                  <label
+                     htmlFor="status-select"
+                     className="font-medium text-gray-700 cursor-pointer"
+                     onClick={handleLabelClick}
+                  >
+                     Trạng thái<span style={{ color: 'red' }}>(*)</span>
+                  </label>
+                  <select
+                     ref={statusRef}
+                     id="status-select" // ID phải trùng với htmlFor của label
+                     className="z-10 h-14 rounded-md border border-gray-300 px-3 py-2 w-full"
+                     value={status}
+                     onChange={(e) => setStatus(e.target.value)}
+                  >
+                     <option value="ACTIVE">Hoạt động</option>
+                     <option value="INACTIVE">Không hoạt động</option>
+                  </select>
+               </div>
+            </div>
+
+            <div className="flex justify-between items-center w-full gap-10">
+               {/* Số lượng nhập */}
+               <div className="flex flex-col w-full">
+                  <label htmlFor="quantity-product">
+                     Số lượng nhập<span style={{ color: 'red' }}>(*)</span>
+                  </label>
+                  <input
+                     className="border border-gray-300 rounded-md p-2"
+                     type="text"
+                     id="quantity-product"
+                     onChange={(e) => setInputQuantity(e.target.value)}
+                     placeholder="Tên sản phẩm"
+                     required
+                  />
+               </div>
+
+               {/* Giá tiền bán sản phẩm */}
+               <div className="flex flex-col w-full">
+                  <label htmlFor="import-price">
+                     Giá tiền nhập sản phẩm<span style={{ color: 'red' }}>(*)</span>
+                  </label>
+                  <input
+                     className="border border-gray-300 rounded-md p-2"
+                     type="text"
+                     id="import-price"
+                     onChange={(e) => setInputQuantity(e.target.value)}
+                     placeholder="Tên sản phẩm"
+                     required
+                  />
+               </div>
+
+               <div className="flex flex-col w-full">
+                  <label htmlFor="discount-price">
+                     Giá tiền giảm sản phẩm<span style={{ color: 'red' }}>(*)</span>
+                  </label>
+                  <input
+                     className="border border-gray-300 rounded-md p-2"
+                     type="text"
+                     id="discount-price"
+                     onChange={(e) => setDiscount(e.target.value)}
+                     placeholder="Tên sản phẩm"
+                     required
+                  />
+               </div>
+            </div>
+         </div>
+
+         <div data-testid="cypress-create_product" className="mt-5">
             <label htmlFor="file">
                Upload hình ảnh <span style={{ color: 'red' }}>(*)</span>
             </label>
@@ -69,38 +213,6 @@ function CreateProductAdmin({ setCountProduct }) {
                required
             />
          </div>
-
-         <div>
-            <label htmlFor="name-product">
-               Tên sản phẩm<span style={{ color: 'red' }}>(*)</span>
-            </label>
-            <input
-               type="text"
-               id="name-product"
-               onChange={(e) => setProductName(e.target.value)}
-               placeholder="Tên sản phẩm"
-               required
-            />
-         </div>
-
-         <div>
-            <label htmlFor="price-product">
-               Giá bán sản phẩm <span style={{ color: 'red' }}>(*)</span>
-            </label>
-            <input
-               type="text"
-               id="price-product"
-               onChange={(e) => setProductPrice(e.target.value)}
-               placeholder="Giá bản sản phẩm"
-               required
-            />
-         </div>
-
-         {/* Select category product */}
-         {/* <SelectProductCategory onCategoryChange={handleCategoryChange} /> */}
-
-         <CategorySelector onChangeCategoryIds={setCategoryIds} />
-
          <button type="submit">Tạo sản phẩm</button>
       </form>
    );
