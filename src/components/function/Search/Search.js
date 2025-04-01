@@ -101,7 +101,7 @@ function Search() {
                </div>
             )}
             onClickOutside={handleHideResult}
-         >
+         >  
             <div className={cx('search')}>
                <input
                   ref={inputRef}
