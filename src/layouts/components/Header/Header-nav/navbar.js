@@ -68,7 +68,7 @@ function Navbar({ children }) {
                     }, // Nếu transformNav đúng, thì chỉ thay đổi opacity
             }}
          >
-            <nav className={cx('inner-nav')}>
+            <nav className={cx('inner-nav' , 'flex items-center justify-between')}>
                <logo className={cx('header-wrap-logo')}>
                   <Link to="/">
                      <img src={images.logoLevion} alt="Levion" className="w-[95px] h-[60px]" />
