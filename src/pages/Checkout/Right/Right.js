@@ -24,9 +24,9 @@ function Right() {
          console.log('cartItem', response.data);
          
 
-         cart.setCart(response.data);
+         cart.setCartItems(response.data.cartItems);
          // Đếm số phần tử trong mảng cartItems và set count
-         const countItems = cart.cart.cartItems.reduce((countItem) => countItem + 1, 0);
+         const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
          setCountCartItem(countItems);
       };
 
@@ -35,7 +35,7 @@ function Right() {
 
    return (
       <>
-         {cart.cart.cartItems.map((item, key) => (
+         {cart.cartItems.map((item, key) => (
             <article key={key} className="flex mb-5" aria-label="Cart Item">
                <div className="w-[120px] h-[120px] flex-none">
                   <img className="w-full h-full object-cover" src={item.product.mainImage} alt={item.product.name} />
