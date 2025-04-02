@@ -163,3 +163,36 @@
    backdrop-filter: blur(20px); /* Làm mờ nội dung phía sau */
    border-color: transparent transparent rgba(237, 237, 237, 0.2);
 }
+
+// .favorite-layer
+.favorite-layer {
+   position: fixed;
+   display: flex;
+   inset: 0;
+   background: rgba(0, 0, 0, 0.4);
+   z-index: 1000;
+   justify-content: flex-end;
+   // opacity: 0;
+   // visibility: hidden;
+   // transition:
+   //    opacity 0.3s ease-in-out,
+   //    visibility 0.3s;
+}
+
+// /* Khi favoriteLayer === true */
+.favorite-layer .favorite-layer-wrap {
+   background: #ffffff;
+   width: 500px;
+   // transform: translateX(100%);
+   // transition: transform 0.3s ease-in-out;
+}
+
+// /* Khi favoriteLayer === true */
+// .favorite-layer.active {
+//    opacity: 1;
+//    visibility: visible;
+// }
+
+// .favorite-layer.active .favorite-layer-wrap {
+//    transform: translateX(0);
+// }

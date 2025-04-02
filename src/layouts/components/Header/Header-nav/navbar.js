@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Image from '../../../images/image';
 import MiniCart from './Mini-cart/MiniCart';
 import Search from '../../../../components/function/Search/Search';
+import FavoriteLayer from './favorite-layer/FavoriteLayer';
 import Tippy from '@tippyjs/react/headless';
 import { Wrapper as PopperWrapper } from '../../../components/Popper';
 
@@ -15,6 +16,7 @@ function Navbar({ children }) {
    const [isVisible, setIsVisible] = useState(true);
    const [lastScrollTop, setLastScrollTop] = useState(0);
    const [isSticky, setIsSticky] = useState(false);
+   const [favoriteLayer, setFavoriteLayer] = useState(false);
 
    useEffect(() => {
       const handleScroll = () => {
@@ -204,7 +206,7 @@ function Navbar({ children }) {
                      <Image iconName={'profileIcon'} />
                   </div>
 
-                  <div>
+                  <div className={cx('favorite-btn')} onClick={() => setFavoriteLayer(!favoriteLayer)}>
                      <Image iconName={'heartIcon'} />
                   </div>
 
@@ -219,6 +221,20 @@ function Navbar({ children }) {
                </div>
             </nav>
          </div>
+
+         {favoriteLayer && (
+            <div className={cx('favorite-layer', { active: favoriteLayer })}>
+               <div className={cx('favorite-layer-wrap')}>
+                  <div className="p-6">
+                     <div className="flex justify-between">
+                        <p>Yêu thích</p>
+                        <button onClick={() => setFavoriteLayer(!favoriteLayer)}>X</button>
+                     </div>
+                     <FavoriteLayer />
+                  </div>
+               </div>
+            </div>
+         )}
 
          <div className="flex flex-col justify-center items-center">{children}</div>
       </div>
