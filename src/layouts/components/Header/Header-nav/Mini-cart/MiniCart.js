@@ -16,7 +16,7 @@ function MiniCart() {
 
    const cart = useContext(CartContext);
 
-   console.log('cartItems', cart.cartItems.cartItems);
+   console.log('cartItems', cart.cartItems);
 
    // Get data cart
    useEffect(() => {
@@ -30,13 +30,14 @@ function MiniCart() {
             },
          });
 
-         cart.setCartItems(response.data);
+         cart.setCartItems(response.data.cartItems);
+         cart.setCartTotal(response.data.cartTotal);
 
          console.log(currentTime);
          console.log(new Date(1739009739 * 1000).toLocaleString());
 
          // Đếm số lần phần tử trong mảng cartIs và set count
-         const countItems = cart.cartItems.cartItems.reduce((countItem) => countItem + 1, 0);
+         const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
          setCountCartItem(countItems);
          // setCart();
       };
@@ -69,7 +70,7 @@ function MiniCart() {
          <hr className="flex w-full h-[2px] bg-[rgb(200,_200,_200)]" />
          <div className={cx('scroll-container', 'max-h-[363px] overflow-auto')} aria-label="Cart Items">
             {/* Product Items */}
-            {cart.cartItems.cartItems.map((item, index) => (
+            {cart.cartItems.map((item, index) => (
                <article
                   className="flex items-center px-[0] py-[15px] gap-7 h-auto border-b border-[rgb(172, 171, 171)]"
                   key={index}
@@ -111,7 +112,7 @@ function MiniCart() {
             <div className="flex justify-between">
                <span className="text-[1.6rem]">Tổng tiền:</span>
                <span className="text-[1.6rem] font-bold" aria-label="Total Amount">
-                  {cart.cartItems.cartTotal.toLocaleString('vi-VN')} ₫
+                  {cart.cartTotal.toLocaleString('vi-VN')} ₫
                </span>
             </div>
             <div className="flex justify-between mt-[10px]">
