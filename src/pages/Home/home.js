@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import ProductSlider from '../../components/Products/Product-slide/Product-slide';
 import SlideBanner from '../../components/SlideBanner/SlideBannerImage/SlideBaner';
-import ProductListCategory from '../../components/Products/ProductListCategory';
+import ProductsNew from '../../components/Products/ProductsNew';
 
 const cx = classNames.bind(styles);
 
@@ -28,6 +28,7 @@ function Home() {
          try {
             const response = await axios.get('http://localhost:3002/products');
             setProducts(response.data); // Đặt dữ liệu sản phẩm vào state
+            console.log('product slide', response.data);
          } catch (error) {
             console.log(error.message);
          }
@@ -48,7 +49,7 @@ function Home() {
                   {/* ------------- */}
                   <div className={cx('flex flex-col align-middle items-center mb-6')}>
                      <span className={cx('mt-5 text-amber-400 font-semibold')}>LEVION</span>
-                     <h2 className="text-3xl font-semibold mt-5">SẢN PHẨM MỚI</h2>
+                     <h2 className="text-3xl font-semibold mt-5">SẢN PHẨM BÁN CHẠY</h2>
                   </div>
                   {/* ------------- */}
                   <div>
@@ -63,9 +64,9 @@ function Home() {
             <section className="max-w-[1340px]">
                <div className={cx('flex flex-col align-middle items-center mb-6')}>
                   <span className={cx('mt-5 text-amber-400 font-semibold')}>LEVION</span>
-                  <h2 className="text-3xl font-semibold mt-5">SẢN PHẨM BÁN CHẠY</h2>
+                  <h2 className="text-3xl font-semibold mt-5">SẢN PHẨM MỚI</h2>
                </div>
-               <ProductListCategory products={products} />
+               <ProductsNew products={products} />
             </section>
          </div>
       </section>
