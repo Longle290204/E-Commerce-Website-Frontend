@@ -118,7 +118,7 @@
    pointer-events: auto; /* Cho phép tương tác khi menu hiển thị */
 }
 
-// Cart btn
+// Cart preview
 .cart-btn {
    position: relative;
    padding: 10px;
@@ -144,8 +144,8 @@
    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 
    transform-origin: 94% top;
-  //  scale: 0;
-  //  opacity: 0;
+   scale: 0;
+   opacity: 0;
 
    transition:
       opacity 0.2s,
