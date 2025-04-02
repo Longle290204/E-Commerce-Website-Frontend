@@ -5,51 +5,52 @@ import classNames from 'classnames/bind';
 import styles from './shoppingCart.module.scss';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../../../../../Context/CartContext';
-import isTokenValid from '../../../../../guards/IsTokenValid';
-import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../../../../../api/axiosInstance';
-import { jwtDecode } from 'jwt-decode';
+import { useAxiosInstance } from '../../../../../api/axiosInstance';
 
 const cx = classNames.bind(styles);
 
 function MiniCart() {
-   // const [cartItems, setCartItems] = useState([]);
    const [countCartItem, setCountCartItem] = useState(0);
 
-   const navigate = useNavigate();
+   const axiosInstance = useAxiosInstance();
 
    const cart = useContext(CartContext);
 
+   console.log('cartItems', cart.cartItems.cartItems);
+
+   // Get data cart
    useEffect(() => {
       const axiosProducts = async () => {
          const accessToken = localStorage.getItem('accessToken');
          const currentTime = Date.now() / 1000;
 
-         const response = await axiosInstance.get(`http://localhost:3002/cart`, {
+         const response = await axiosInstance.get(`/cart`, {
             headers: {
                Authorization: `Bearer ${accessToken}`,
             },
          });
-         console.log(response);
-
-         console.log(currentTime);
-         console.log(new Date(1738319163 * 1000).toLocaleString());
 
          cart.setCartItems(response.data);
-         // Đếm số lần phần tử trong mảng cartItems và set count
-         const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
+
+         console.log(currentTime);
+         console.log(new Date(1739009739 * 1000).toLocaleString());
+
+         // Đếm số lần phần tử trong mảng cartIs và set count
+         const countItems = cart.cartItems.cartItems.reduce((countItem) => countItem + 1, 0);
          setCountCartItem(countItems);
-         // setCartItems();
+         // setCart();
       };
 
       axiosProducts();
    }, [countCartItem]);
 
-   const updateSubTotal = cart.cartItems.reduce((total, currentItem) => total + Number(currentItem.product.price), 0);
-
    const handleDeleteItemCart = async (productId) => {
       try {
-         await axios.delete(`http://localhost:3002/cart/${productId}`);
+         await axios.delete(`http://localhost:3002/cart/${productId}`, {
+            headers: {
+               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+         });
          setCountCartItem((prevCount) => prevCount + 1);
       } catch (error) {
          console.log(error.message);
@@ -58,7 +59,7 @@ function MiniCart() {
 
    return (
       <section
-         className="pt-7 pr-7 pl-7 pb-7"
+         className="pt-7 pr-7 pl-7 pb-7 flex-grow"
          style={{ boxShadow: '0px 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
          aria-label="Mini Cart"
       >
@@ -68,18 +69,14 @@ function MiniCart() {
          <hr className="flex w-full h-[2px] bg-[rgb(200,_200,_200)]" />
          <div className={cx('scroll-container', 'max-h-[363px] overflow-auto')} aria-label="Cart Items">
             {/* Product Items */}
-            {cart.cartItems.map((item) => (
+            {cart.cartItems.cartItems.map((item, index) => (
                <article
                   className="flex items-center px-[0] py-[15px] gap-7 h-auto border-b border-[rgb(172, 171, 171)]"
-                  key={item.id}
+                  key={index}
                   aria-label="Cart Item"
                >
                   <Link to="/" className={cx('cart-item-image-link')}>
-                     <img
-                        className="w-[90px] h-[90px] object-cover"
-                        src={item.product.imageURL}
-                        alt={item.product.name}
-                     />
+                     <img className="w-[90px] h-[90px] object-cover" src={item.product.mainImage} alt={item.product.name} />
                   </Link>
                   <div className="max-w-md">
                      <Link to="/" className={cx('cart-item-name-link')}>
@@ -95,7 +92,7 @@ function MiniCart() {
                            {item.quantity}
                         </p>
                         <p className="text-[1.4rem] font-bold text-[#000]" aria-label="Price">
-                           {item.product.price} ₫
+                           {item.totalPrice} ₫
                         </p>
                         <button
                            className="text-xl font-medium underline cursor-pointer ml-auto mr-[10px]"
@@ -114,7 +111,7 @@ function MiniCart() {
             <div className="flex justify-between">
                <span className="text-[1.6rem]">Tổng tiền:</span>
                <span className="text-[1.6rem] font-bold" aria-label="Total Amount">
-                  {updateSubTotal.toLocaleString('vi-VN')} ₫
+                  {cart.cartItems.cartTotal.toLocaleString('vi-VN')} ₫
                </span>
             </div>
             <div className="flex justify-between mt-[10px]">
@@ -126,7 +123,7 @@ function MiniCart() {
                   XEM GIỎ HÀNG
                </Link>
                <Link
-                  to="/"
+                  to="/checkout"
                   className="flex items-center px-[28px] py-[3px] bg-[#000] text-[1.2rem] text-[#fff] hover:bg-[#424242] hover:border border-[1px] border-solid border-[#424242]"
                   aria-label="Checkout"
                >
