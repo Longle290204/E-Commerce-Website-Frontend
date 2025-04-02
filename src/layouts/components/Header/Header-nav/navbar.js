@@ -69,11 +69,11 @@ function Navbar({ children }) {
             }}
          >
             <nav className={cx('inner-nav', 'flex items-center justify-between')}>
-               <logo className={cx('header-wrap-logo')}>
+               <div className={cx('header-wrap-logo')}>
                   <Link to="/">
                      <img src={images.logoLevion} alt="Levion" className="w-[95px] h-[60px]" />
                   </Link>
-               </logo>
+               </div>
 
                <div className="flex flex-col items-center justify-between w-full">
                   <Search />
