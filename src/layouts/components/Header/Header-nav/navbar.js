@@ -222,19 +222,17 @@ function Navbar({ children }) {
             </nav>
          </div>
 
-         {favoriteLayer && (
-            <div className={cx('favorite-layer', { active: favoriteLayer })} onClick={() => setFavoriteLayer(false)}>
-               <div className={cx('favorite-layer-wrap')} onClick={(e) => e.stopPropagation()}>
-                  <div className="p-6">
-                     <div className="flex justify-between">
-                        <p>Yêu thích</p>
-                        <button onClick={() => setFavoriteLayer(!favoriteLayer)}>X</button>
-                     </div>
-                     <FavoriteLayer />
+         <div className={cx('favorite-layer', { active: favoriteLayer })} onClick={() => setFavoriteLayer(false)}>
+            <div className={cx('favorite-layer-wrap')} onClick={(e) => e.stopPropagation()}>
+               <div className="p-6">
+                  <div className="flex justify-between">
+                     <p>Yêu thích</p>
+                     <button onClick={() => setFavoriteLayer(!favoriteLayer)}>X</button>
                   </div>
+                  <FavoriteLayer />
                </div>
             </div>
-         )}
+         </div>
 
          <div className="flex flex-col justify-center items-center">{children}</div>
       </div>

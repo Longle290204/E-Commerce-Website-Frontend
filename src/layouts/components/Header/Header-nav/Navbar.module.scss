@@ -172,27 +172,29 @@
    background: rgba(0, 0, 0, 0.4);
    z-index: 1000;
    justify-content: flex-end;
-   // opacity: 0;
-   // visibility: hidden;
-   // transition:
-   //    opacity 0.3s ease-in-out,
-   //    visibility 0.3s;
+   opacity: 0;
+   visibility: hidden;
+   transition:
+      opacity 0.3s ease-in-out,
+      visibility 0.3s;
 }
 
 // /* Khi favoriteLayer === true */
 .favorite-layer .favorite-layer-wrap {
    background: #ffffff;
    width: 500px;
-   // transform: translateX(100%);
-   // transition: transform 0.3s ease-in-out;
+   transform: translateX(100%);
+   transition: transform 0.3s ease-in-out;
 }
 
 // /* Khi favoriteLayer === true */
-// .favorite-layer.active {
-//    opacity: 1;
-//    visibility: visible;
-// }
+.favorite-layer.active {
+   opacity: 1;
+   visibility: visible;
+}
 
-// .favorite-layer.active .favorite-layer-wrap {
-//    transform: translateX(0);
-// }
+.favorite-layer.active .favorite-layer-wrap {
+   opacity: 1;
+   visibility: visible;
+   transform: translateX(0%);
+}
