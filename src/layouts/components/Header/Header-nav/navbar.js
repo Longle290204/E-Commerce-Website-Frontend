@@ -211,9 +211,12 @@ function Navbar({ children }) {
                   </div>
 
                   {/* <---- Cart btn ----> */}
-
                   <div className={cx('cart-btn')}>
-                     <Image iconName={'shoppingCartIcon'} />
+                     <Link to="/cartpage" className={cx('cart-icon')}>
+                        <div>
+                           <Image iconName={'shoppingCartIcon'} />
+                        </div>
+                     </Link>
                      <div className={cx('cart-preview')}>
                         <MiniCart />
                      </div>
