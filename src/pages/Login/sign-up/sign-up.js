@@ -7,6 +7,8 @@ import useDebounce from '../../../hooks/useDebounce';
 function SignUp() {
    const cx = classNames.bind(styles);
    const [formData, setFormData] = useState({
+      surName: '',
+      name: '',
       username: '',
       phoneNumber: '',
       password: '',
@@ -19,6 +21,20 @@ function SignUp() {
    const [errors, setErrors] = useState({});
 
    const validationRules = {
+      surName: {
+         required: 'Vui lòng nhập trường này',
+         pattern: {
+            value: /^[A-Z]/,
+            message: 'Sai định dạng',
+         },
+      },
+      name: {
+         required: 'Vui lòng nhập trường này',
+         pattern: {
+            value: /^[A-Z]/,
+            message: 'Sai định dạng',
+         },
+      },
       username: {
          required: 'Vui lòng nhập đầy đủ tên',
          pattern: {
@@ -52,7 +68,6 @@ function SignUp() {
    const validateField = async (field, value) => {
       const rules = validationRules[field];
       if (!rules) return '';
-
       if (rules.required && !value.trim()) return rules.required;
       if (rules.pattern && !rules.pattern.value.test(value)) return rules.pattern.message;
       if (rules.minLength && value.length < rules.minLength.value) return rules.minLength.message;
@@ -70,11 +85,7 @@ function SignUp() {
       try {
          const response = await axios.post(`http://localhost:3002/auth/checkIfExist`, { [field]: value });
          console.log(response.data.exists);
-         return response.data.exists
-            ? field === 'username'
-               ? `Tên đăng nhập đã tồn tại`
-               : `Số điện thoại đã tồn tại`
-            : '';
+         return response.data.exists ? (field === 'username' ? `Tên đăng nhập đã tồn tại` : `Số điện thoại đã tồn tại`) : '';
       } catch (error) {
          console.error('Lỗi kiểm tra tồn tại:', error);
          return 'Lỗi kết nối, vui lòng thử lại';
@@ -131,6 +142,9 @@ function SignUp() {
 
       try {
          const response = await axios.post('http://localhost:3002/auth/signUp', {
+            surName: formData.surName,
+            name: formData.name,
+            gender: formData.gender,
             username: formData.username,
             phoneNumber: formData.phoneNumber,
             password: formData.password,
@@ -145,25 +159,44 @@ function SignUp() {
    return (
       <form onSubmit={handleSubmit} noValidate className={cx('form-signUp')}>
          <h4>ĐĂNG KÝ</h4>
-         {['username', 'phoneNumber', 'password', 'rePassword'].map((field) => (
-            <div className={cx('box-info')} key={field}>
-               <label htmlFor={field}>
+         {['surName', 'name', 'Female', 'Male', 'username', 'phoneNumber', 'password', 'rePassword'].map((field) => (
+            <div
+               className={cx('box-info', field === 'Female' || field === 'Male' ? 'inline-block mr-12 mt-7 mb-7' : '')}
+               key={field}
+            >
+               <label htmlFor={field} className={field === 'Female' || field === 'Male' ? 'float-right' : ''}>
+                  {field === 'surName' && 'Họ'}
+                  {field === 'name' && 'Tên'}
+                  {field === 'Female' && 'Nữ'}
+                  {field === 'Male' && 'Nam'}
                   {field === 'username' && 'Tên đăng nhập'}
                   {field === 'phoneNumber' && 'Số điện thoại'}
                   {field === 'password' && 'Mật khẩu'}
                   {field === 'rePassword' && 'Nhắc lại mật khẩu'}
-                  <span>*</span>
+                  {field === 'Female' || field === 'Male' ? <span></span> : <span>*</span>}
                </label>
-               <input
-                  className={cx('input-form', errors[field] ? 'input-form-wrong' : 'input-form-hover')}
-                  type={field.includes('password') ? 'password' : 'text'}
-                  id={field}
-                  name={field}
-                  value={formData[field]}
-                  onChange={handleInputChange}
-                  onBlur={(e) => handleBlur(e)}
-                  required
-               />
+               {field === 'Female' || field === 'Male' ? (
+                  <input
+                     className={cx('w-auto mr-3', errors[field] ? 'input-form-wrong' : 'input-form-hover')}
+                     type="radio"
+                     id={field}
+                     name="gender"
+                     value={field === 'Female' ? 'Female' : 'Male'}
+                     onChange={handleInputChange}
+                     required
+                  />
+               ) : (
+                  <input
+                     className={cx('input-form', errors[field] ? 'input-form-wrong' : 'input-form-hover')}
+                     type={field.includes('password') ? 'password' : 'text'}
+                     id={field}
+                     name={field}
+                     value={formData[field]}
+                     onChange={handleInputChange}
+                     onBlur={(e) => handleBlur(e)}
+                     required
+                  />
+               )}
                {errors[field] && <span className={cx('form-message')}>{errors[field]}</span>}
             </div>
          ))}
@@ -171,9 +204,7 @@ function SignUp() {
             Đăng Ký
          </button>
          <div className={cx('note')}>
-            <p>
-               Thông tin cá nhân của bạn sẽ được dùng để điền vào hóa đơn, giúp bạn thanh toán nhanh chóng và dễ dàng
-            </p>
+            <p>Thông tin cá nhân của bạn sẽ được dùng để điền vào hóa đơn, giúp bạn thanh toán nhanh chóng và dễ dàng</p>
          </div>
       </form>
    );
