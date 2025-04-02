@@ -44,7 +44,7 @@ const ProductSlider = ({ products }) => {
           <SwiperSlide key={index}>
             <div className={cx("product-card")}>
               <img
-                src={product.imageURL}
+                src={product.mainImage}
                 alt={product.name}
                 className={cx("product-image")}
               />
