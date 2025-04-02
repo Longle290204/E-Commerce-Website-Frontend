@@ -68,7 +68,7 @@ function Navbar({ children }) {
                     }, // Nếu transformNav đúng, thì chỉ thay đổi opacity
             }}
          >
-            <nav className={cx('inner-nav' , 'flex items-center justify-between')}>
+            <nav className={cx('inner-nav', 'flex items-center justify-between')}>
                <logo className={cx('header-wrap-logo')}>
                   <Link to="/">
                      <img src={images.logoLevion} alt="Levion" className="w-[95px] h-[60px]" />
@@ -223,8 +223,8 @@ function Navbar({ children }) {
          </div>
 
          {favoriteLayer && (
-            <div className={cx('favorite-layer', { active: favoriteLayer })}>
-               <div className={cx('favorite-layer-wrap')}>
+            <div className={cx('favorite-layer', { active: favoriteLayer })} onClick={() => setFavoriteLayer(false)}>
+               <div className={cx('favorite-layer-wrap')} onClick={(e) => e.stopPropagation()}>
                   <div className="p-6">
                      <div className="flex justify-between">
                         <p>Yêu thích</p>
