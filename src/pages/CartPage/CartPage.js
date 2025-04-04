@@ -11,6 +11,7 @@ const cx = classNames.bind(styles);
 
 function CartPage() {
    const cart = useContext(CartContext);
+   const [inputValues, setInputValues] = useState({});
 
    const [countCartItem, setCountCartItem] = useState(0);
 
@@ -27,7 +28,7 @@ function CartPage() {
 
          console.log('data test', response.data);
          // Set data
-         cart.setCartItems(response.data);
+         cart.setCartItems(response.data.cartItems);
 
          // Đếm số phần tử trong mảng cartItems và set count
          const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
@@ -60,6 +61,28 @@ function CartPage() {
       }
 
       // Cập nhật state để useEffect được gọi lại
+   };
+
+   const handleInputChange = (e, productId) => {
+      const newQuantity = e.target.value;
+
+      setInputValues((prev) => ({
+         ...prev,
+         [productId]: newQuantity,
+      }));
+
+      axios
+         .post(
+            'http://localhost:3002/cart/input-quantity',
+            {
+               productId,
+               quantity: newQuantity,
+            },
+            {
+               headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+            },
+         )
+         .catch((error) => console.log(error.message));
    };
 
    const handleDecrease = async (id) => {
@@ -107,11 +130,7 @@ function CartPage() {
                {/* Phần sản phẩm */}
                <div>
                   {cart.cartItems.map((item, key) => (
-                     <article
-                        key={key}
-                        className="flex border border-solid border-[#808080] mb-10"
-                        aria-label="Cart Item"
-                     >
+                     <article key={key} className="flex border border-solid border-[#808080] mb-10" aria-label="Cart Item">
                         <Link to="/">
                            <img
                               className="w-[200px] h-[200px] object-cover"
@@ -146,11 +165,11 @@ function CartPage() {
                                        type="text"
                                        id="quantity"
                                        name="quantity"
-                                       value={item.quantity}
-                                       readOnly
+                                       value={inputValues[item.product.id] ?? item.quantity} // Kiểm tra nếu chưa nhập thì dùng giá trị từ item.quantity}
                                        className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
                                   [&::-webkit-outer-spin-button]:appearance-none 
                                   [appearance:textfield]"
+                                       onChange={(e) => handleInputChange(e, item.product.id)}
                                     />
                                     <button
                                        className="w-14 border-t border-b border-r border-[#808080]"
@@ -206,15 +225,9 @@ function CartPage() {
 
                <div className="relative flex items-center bg-white justify-between">
                   <input className="w-full border border-solid border-[#767677] p-5 mb-3" type="text" placeholder="" />
-                  <label className={cx('label-name', 'absolute block text-gray-600 text-2xl mb-1')}>
-                     Nhập mã khuyến mãi
-                  </label>
+                  <label className={cx('label-name', 'absolute block text-gray-600 text-2xl mb-1')}>Nhập mã khuyến mãi</label>
 
-                  <img
-                     className={cx('plus-icon', 'absolute w-10 h-10 font-bold cursor-pointer')}
-                     src={images.plus}
-                     alt="plus"
-                  />
+                  <img className={cx('plus-icon', 'absolute w-10 h-10 font-bold cursor-pointer')} src={images.plus} alt="plus" />
                </div>
 
                <Link
