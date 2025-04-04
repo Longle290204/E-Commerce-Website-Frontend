@@ -45,7 +45,7 @@ function ProductInfo({ id }) {
          `http://localhost:3002/cart`,
          {
             productId,
-            quantity: 1,
+            quantity: inputValue,
          },
          {
             headers: {
@@ -53,7 +53,6 @@ function ProductInfo({ id }) {
             },
          },
       );
-      cart.addToCart(response.data);
    };
 
    // Custom MUI theme
