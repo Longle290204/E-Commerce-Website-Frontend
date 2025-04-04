@@ -55,7 +55,7 @@ function NamCategory() {
             <SlideBanner slideBanners={slideBanners} />
             <div className={cx("container")}>
                 <div className={cx("color-filter")}>
-                    <div>Màu sắc</div>
+                    <div>Màu sắcadadasdasdasd</div>
                 </div>
                 <div className={cx("size-filter")}>
                     <div>Kích thước</div>
