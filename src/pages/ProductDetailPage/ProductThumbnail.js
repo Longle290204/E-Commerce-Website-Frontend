@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState, useRef } from 'react';
 import { Box, IconButton, Paper } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -10,21 +10,32 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation, Scrollbar, EffectFade, Thumbs, FreeMode } from 'swiper/modules';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import hunterwhite1 from '../../assets/images/hunterwhite1.webp';
-import hunterwhite2 from '../../assets/images/hunterwhite2.webp';
-import hunterwhite3 from '../../assets/images/hunterwhite3.webp';
-import hunterwhite4 from '../../assets/images/hunterwhite4.webp';
-import hunterwhite5 from '../../assets/images/hunterwhite5.jpg';
-import { color } from '@mui/system';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-function ProductThumbnail() {
+function ProductThumbnail({ id }) {
+   console.log('idthumbnil', id);
+
    const [thumbsSwiper, setThumbsSwiper] = useState(null);
+   const [images, setImages] = useState([]); // State để lưu trữ hình ảnh thumbnail
 
    const swiperRef = useRef(null); // Tạo ref cho Swiper
 
-   const images = [hunterwhite1, hunterwhite2, hunterwhite3, hunterwhite4, hunterwhite5];
+   useEffect(() => {
+      const axiosThumbail = async () => {
+         try {
+            const response = await axios.get(`http://localhost:3002/products/${id}`);
+
+            setImages(response.data.images); // Lưu trữ hình ảnh vào state
+            console.log('images', response.data);
+         } catch (error) {
+            console.error('Error fetching thumbnail images:', error);
+         }
+      };
+
+      axiosThumbail();
+   }, []);
 
    const theme = createTheme({
       components: {
@@ -70,7 +81,7 @@ function ProductThumbnail() {
             >
                {images.map((src, index) => (
                   <SwiperSlide key={index}>
-                     <img src={src} alt={`Thumbnail ${index + 1}`} />
+                     <img src={src.imageUrl} alt={`Thumbnail ${index + 1}`} />
                   </SwiperSlide>
                ))}
             </Swiper>
@@ -98,7 +109,7 @@ function ProductThumbnail() {
             >
                {images.map((src, index) => (
                   <SwiperSlide key={index}>
-                     <img src={src} alt={`Product ${index + 1}`} className={cx('main-image')} />
+                     <img src={src.imageUrl} alt={`Product ${index + 1}`} className={cx('main-image')} />
                   </SwiperSlide>
                ))}
 
