@@ -4,8 +4,12 @@ import Grid from '@mui/material/Grid2';
 import ProductThumbnail from './ProductThumbnail';
 import ProductInfo from './ProductInfo';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useLocation } from 'react-router-dom';
 
 const ProductDetail = () => {
+   const location = useLocation();
+   const { id } = location.state || {};
+
    const theme = createTheme({
       typography: {
          h5: {
@@ -47,12 +51,12 @@ const ProductDetail = () => {
             <Grid container spacing={5} sx={{ padding: 2 }}>
                {/* Cột bên trái */}
                <Grid item xl={6}>
-                  <ProductThumbnail />
+                  <ProductThumbnail id={id} />
                </Grid>
 
                {/* Cột bên phải (Thông tin sản phẩm) */}
                <Grid item xl={6} sx={{ flexGrow: 1 }}>
-                  <ProductInfo />
+                  <ProductInfo id={id} />
                </Grid>
             </Grid>
          </Container>
