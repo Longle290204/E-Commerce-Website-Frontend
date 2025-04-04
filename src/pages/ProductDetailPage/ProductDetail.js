@@ -5,6 +5,7 @@ import ProductThumbnail from './ProductThumbnail';
 import ProductInfo from './ProductInfo';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
+import Breadcrumb from '../../routers/Breadcrumb';
 
 const ProductDetail = () => {
    const location = useLocation();
@@ -48,6 +49,9 @@ const ProductDetail = () => {
    return (
       <ThemeProvider theme={theme}>
          <Container maxWidth="xl" disableGutters>
+            <Breadcrumb type={'product'} />
+
+            {/* Đường dẫn sản phẩm */}
             <Grid container spacing={5} sx={{ padding: 2 }}>
                {/* Cột bên trái */}
                <Grid item xl={6}>
