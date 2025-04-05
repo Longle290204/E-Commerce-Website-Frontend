@@ -6,6 +6,7 @@ import ProductInfo from './ProductInfo';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
 import Breadcrumb from '../../routers/Breadcrumb';
+import ProductDescribe from './ProductDescribe';
 
 const ProductDetail = () => {
    const location = useLocation();
@@ -63,6 +64,10 @@ const ProductDetail = () => {
                   <ProductInfo id={id} />
                </Grid>
             </Grid>
+
+            <div className="mb-5">
+               <ProductDescribe />
+            </div>
          </Container>
       </ThemeProvider>
    );
