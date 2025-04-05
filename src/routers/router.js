@@ -10,17 +10,17 @@ import CategoryPage from '../pages/AdminPage/CategoryPage/CategoryPages';
 import CheckoutPage from '../pages/Checkout/checkout';
 import CartPage from '../pages/CartPage/CartPage';
 import ProductsNewPage from '../pages/ProductsNewPage/ProductsNewPage';
+import ProductDetail from '../pages/ProductDetailPage/ProductDetail';
 
 const publicRoutes = [
    { path: '/', element: Home },
    { path: '/cart', element: Cart },
    { path: '/login', element: LoginForm },
-   { path: '/collection/nam', element: NamCategory },
-   { path: '/collection/nu', element: NuCategory },
    { path: '/admin', element: Dashboard, layout: AdminPage },
    { path: '/checkout', element: CheckoutPage },
    { path: '/cartpage', element: CartPage },
    { path: '/collection/:slug', element: ProductsNewPage },
+   { path: '/products/:slug', element: ProductDetail },
    {
       path: '/admin/products',
       element: ProductAdminPage,
