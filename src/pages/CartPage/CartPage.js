@@ -120,7 +120,7 @@ function CartPage() {
                <div className="mb-20">
                   <h1 className="text-[3.6rem] text-[#000] font-semibold mb-2">GIỎ HÀNG CỦA BẠN</h1>
                   <p className="font-sans text-[17px] mb-2">
-                     TỔNG CỘNG (2 các sản phẩm) <strong>4.100.000₫</strong>
+                     TỔNG CỘNG (<strong>{cart.quantityTotalProduct}</strong> sản phẩm) <strong>${cart.cartTotal}</strong>
                   </p>
                   <p className="font-sans text-[17px]">
                      Các mặt hàng trong giỏ hàng của bạn không được bảo lưu — hãy kiểm tra ngay để đặt hàng.
@@ -148,7 +148,7 @@ function CartPage() {
                                  <p>
                                     KÍCH CỠ: <span>7UK</span>
                                  </p>
-                                 <span>1.200.000 VNĐ</span>
+                                 <span>{item.totalPrice.toLocaleString('vi-VN')}</span>
                               </div>
 
                               <div className="flex justify-between">
@@ -207,8 +207,8 @@ function CartPage() {
                <h2 className="text-[2.3rem] text-[#000000] font-semibold mb-2">THÔNG TIN ĐƠN HÀNG</h2>
 
                <div className="flex justify-between mt-7">
-                  <p>2 sản phẩm</p>
-                  <span>16.500.000đ</span>
+                  <p>{cart.quantityTotalProduct} sản phẩm</p>
+                  <span>{cart.cartTotal}₫</span>
                </div>
                <div className="flex justify-between mb-7">
                   <p>Giao hàng</p>
@@ -220,7 +220,7 @@ function CartPage() {
                      <strong>Tổng</strong>
                      <p className="text-gray-600 text-2xl">(Đã bao gồm thuế 1.225.926₫)</p>
                   </div>
-                  <strong>16.550.000₫</strong>
+                  <strong>{cart.cartTotal}₫</strong>
                </div>
 
                <div className="relative flex items-center bg-white justify-between">
