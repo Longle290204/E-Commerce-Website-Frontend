@@ -22,13 +22,18 @@ function Right() {
             },
          });
          console.log('cartItem', response.data);
-         
 
+         // Set dữ liệu vào context
          cart.setCartItems(response.data.cartItems);
+         cart.setQuantityTotalProduct(response.data.quantityTotal);
+         cart.setCartTotal(response.data.cartTotal);
+
          // Đếm số phần tử trong mảng cartItems và set count
          const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
          setCountCartItem(countItems);
       };
+
+      console.log('cart total', cart.quantityTotalProduct);
 
       axiosProducts();
    }, [countCartItem]);
@@ -41,16 +46,20 @@ function Right() {
                   <img className="w-full h-full object-cover" src={item.product.mainImage} alt={item.product.name} />
                </div>
 
-               <div className="flex flex-col items-stretch h-full p-1 pl-5 text-2xl">
+               <div className="flex flex-col items-stretch h-full p-1 pl-5 text-2xl gap-y-5">
                   <div className="flex">
                      <p>Giày Thể Thao Nam xanh Biti’s Hunter X LiteDash - Original Edition 2K24</p>
                   </div>
 
-                  <div className="flex justify-between mt-6">
+                  <div className="flex justify-between">
                      <p>
                         KÍCH CỠ: <span>7UK</span>
                      </p>
-                     <span>1.200.000 VNĐ</span>
+                     <span>{item.totalPrice} VNĐ</span>
+                  </div>
+
+                  <div>
+                     SL: <span className={cx('quantity')}>{item.quantity}</span>
                   </div>
                </div>
             </article>
@@ -59,8 +68,8 @@ function Right() {
          <hr className="border-t border-solid border-[#d3d7da] mt-9 mb-9"></hr>
 
          <div className="flex justify-between">
-            <p>2 sản phẩm</p>
-            <span>16.500.000đ</span>
+            <p>{cart.quantityTotalProduct} sản phẩm</p>
+            <span>{cart.cartTotal}đ</span>
          </div>
          <div className="flex justify-between mb-7">
             <p>Giao hàng</p>
@@ -72,18 +81,14 @@ function Right() {
                <strong>Tổng</strong>
                <p className="text-gray-600 text-2xl">(Đã bao gồm thuế 1.225.926₫)</p>
             </div>
-            <strong>16.550.000₫</strong>
+            <strong>{cart.cartTotal}₫</strong>
          </div>
 
          <div className="relative flex items-center bg-white justify-between">
             <input className="w-full border border-solid border-[#767677] p-5 mb-3" type="text" placeholder="" />
             <label className={cx('label-name', 'absolute block text-gray-600 text-2xl mb-1')}>Nhập mã khuyến mãi</label>
 
-            <img
-               className={cx('plus-icon', 'absolute w-10 h-10 font-bold cursor-pointer')}
-               src={images.plus}
-               alt="plus"
-            />
+            <img className={cx('plus-icon', 'absolute w-10 h-10 font-bold cursor-pointer')} src={images.plus} alt="plus" />
          </div>
       </>
    );
