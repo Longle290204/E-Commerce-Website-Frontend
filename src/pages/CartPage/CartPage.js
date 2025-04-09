@@ -146,7 +146,7 @@ function CartPage() {
 
                               <div className="flex justify-between">
                                  <p>
-                                    KÍCH CỠ: <span>7UK</span>
+                                    KÍCH CỠ: <span>{item.size}</span>
                                  </p>
                                  <span>{item.totalPrice.toLocaleString('vi-VN')}</span>
                               </div>
