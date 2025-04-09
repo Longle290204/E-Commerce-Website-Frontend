@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Card, CardMedia, Typography, Button, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CartContext } from '../../Context/CartContext';
 
 function ProductInfo({ id }) {
    // Option color
@@ -13,11 +12,9 @@ function ProductInfo({ id }) {
    const [inputValue, setInputValue] = useState(1);
 
    // Sizes
-   const sizes = [36, 37, 38, 39, 40, 41, 42, 43];
-   const [activeSize, setActiveSize] = useState(sizes[0]);
+   const [sizes, setSizes] = useState([]);
+   const [activeSize, setActiveSize] = useState();
 
-   // Context
-   const cart = useContext(CartContext);
 
    const handleQuantity = (method) => {
       setInputValue((prev) => {
@@ -33,6 +30,8 @@ function ProductInfo({ id }) {
          const response = await axios.get(`http://localhost:3002/products/${id}`);
          console.log('option color', response.data);
          setOptionColor(response.data);
+         setSizes(response.data.productSizes);
+         console.log('sizes', response.data.productSizes);
       };
 
       fetchAxios();
@@ -46,6 +45,7 @@ function ProductInfo({ id }) {
          {
             productId,
             quantity: inputValue,
+            sizeId: activeSize,
          },
          {
             headers: {
@@ -159,11 +159,11 @@ function ProductInfo({ id }) {
                </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-               {sizes.map((size) => (
+               {sizes.map((item) => (
                   <Button
                      variant="h5"
-                     key={size}
-                     onClick={() => setActiveSize(size)}
+                     key={item.id}
+                     onClick={() => setActiveSize(item.size.id)}
                      sx={{
                         fontSize: '1.5rem',
                         width: '40px', // Tăng kích thước để vừa với chữ số
@@ -173,11 +173,11 @@ function ProductInfo({ id }) {
                         paddingBottom: 2,
                         paddingLeft: 4,
                         paddingRight: 4,
-                        border: activeSize === size ? '2px solid #000 !important ' : '1px solid #e1e1e1 !important',
+                        border: activeSize === item.size.id ? '2px solid #000 !important ' : '1px solid #e1e1e1 !important',
                         borderRadius: '2',
                      }}
                   >
-                     {size}
+                     {item.size.size}
                   </Button>
                ))}
             </Box>
