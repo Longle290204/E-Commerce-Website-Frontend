@@ -39,36 +39,44 @@ function CartPage() {
    }, [countCartItem]);
 
    // Update quantity
-   const updateQuantity = (id, change) => {
+   const updateQuantity = (id, change, size) => {
       cart.setCartItems((prev) =>
-         prev.map((item) => (item.product.id === id ? { ...item, quantity: item.quantity + change } : item)),
+         prev.map((item) =>
+            item.product.id === id && item.size === size ? { ...item, quantity: item.quantity + change } : item,
+         ),
       );
    };
 
-   const handleIncrease = async (id) => {
+   const handleIncrease = async (id, size) => {
       // Cập nhật state để hiển thị ngay lập tức khi click
-      updateQuantity(id, 1);
+      updateQuantity(id, 1, size);
       try {
          await axios.post(
-            `http://localhost:3002/cart/increase-quantity/${id}`,
-            {},
+            `http://localhost:3002/cart/increase-quantity`,
+            { productId: id, size: size },
             {
                headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
             },
          );
       } catch (error) {
-         updateQuantity(id, -1);
+         updateQuantity(id, 1, size);
       }
 
       // Cập nhật state để useEffect được gọi lại
    };
 
-   const handleInputChange = (e, productId) => {
-      const newQuantity = e.target.value;
+   const handleInputChange = (value, productId, size) => {
+      const newQuantity = value;
+
+      console.log('newQuantity', newQuantity);
+      console.log('productId', productId);
+
+      // Tạo key dạng "productId-size" để phân biệt từng sản phẩm theo size
+      const key = `${productId}-${size}`;
 
       setInputValues((prev) => ({
          ...prev,
-         [productId]: newQuantity,
+         [key]: newQuantity, // Cập nhật giá trị mới cho productId
       }));
 
       axios
@@ -77,6 +85,7 @@ function CartPage() {
             {
                productId,
                quantity: newQuantity,
+               size: size,
             },
             {
                headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
@@ -85,20 +94,20 @@ function CartPage() {
          .catch((error) => console.log(error.message));
    };
 
-   const handleDecrease = async (id) => {
+   const handleDecrease = async (id, size) => {
       // Cập nhật state để hiển thị ngay lập tức khi click
-      updateQuantity(id, -1);
+      updateQuantity(id, -1, size);
 
       try {
          await axios.post(
             `http://localhost:3002/cart/decrease-quantity`,
-            { productId: id },
+            { productId: id, size },
             {
                headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
             },
          );
       } catch (error) {
-         updateQuantity(id, 1);
+         updateQuantity(id, 1, size);
       }
    };
 
@@ -157,7 +166,7 @@ function CartPage() {
                                     <button
                                        className="w-14 border-t border-b border-l border-[#808080]"
                                        data-type="minus"
-                                       onClick={() => handleDecrease(item.product.id)}
+                                       onClick={() => handleDecrease(item.product.id, item.size)}
                                     >
                                        -
                                     </button>
@@ -165,16 +174,20 @@ function CartPage() {
                                        type="text"
                                        id="quantity"
                                        name="quantity"
-                                       value={inputValues[item.product.id] ?? item.quantity} // Kiểm tra nếu chưa nhập thì dùng giá trị từ item.quantity}
+                                       value={inputValues[`${item.product.id}-${item.size}`] ?? item.quantity} // Kiểm tra nếu chưa nhập thì dùng giá trị từ item.quantity}
                                        className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
                                   [&::-webkit-outer-spin-button]:appearance-none 
                                   [appearance:textfield]"
-                                       onChange={(e) => handleInputChange(e, item.product.id)}
+                                       min="1"
+                                       onChange={(e) => {
+                                          const value = Number(e.target.value);
+                                          handleInputChange(value >= 1 ? value : '', item.product.id, item.size); // Không cho nhập số nhỏ hơn 1
+                                       }}
                                     />
                                     <button
                                        className="w-14 border-t border-b border-r border-[#808080]"
                                        data-type="plus"
-                                       onClick={() => handleIncrease(item.product.id)}
+                                       onClick={() => handleIncrease(item.product.id, item.size)}
                                     >
                                        +
                                     </button>
