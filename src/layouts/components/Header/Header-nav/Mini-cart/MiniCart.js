@@ -16,8 +16,6 @@ function MiniCart() {
 
    const cart = useContext(CartContext);
 
-   console.log('cartItems', cart.cartItems);
-
    // Get data cart
    useEffect(() => {
       const axiosProducts = async () => {
@@ -72,14 +70,15 @@ function MiniCart() {
             {/* Product Items */}
             {cart.cartItems.map((item, index) => (
                <article
-                  className="flex items-center px-[0] py-[15px] gap-7 h-auto border-b border-[rgb(172, 171, 171)]"
+                  className="flex items-center w-full px-[0] py-[15px] gap-7 h-auto border-b border-[rgb(172, 171, 171)]"
                   key={index}
                   aria-label="Cart Item"
                >
-                  <Link to="/" className={cx('cart-item-image-link')}>
+                  <Link to="/" className={cx('cart-item-image-link', 'flex-shrink-0')}>
                      <img className="w-[90px] h-[90px] object-cover" src={item.product.mainImage} alt={item.product.name} />
                   </Link>
-                  <div className="max-w-md">
+
+                  <div className="flex flex-col gap-7 w-full">
                      <Link to="/" className={cx('cart-item-name-link')}>
                         <h3
                            className="font-normal text-2xl text-[#000] cursor-pointer hover:font-medium"
@@ -88,7 +87,7 @@ function MiniCart() {
                            {item.product.name}
                         </h3>
                      </Link>
-                     <div className="flex justify-around">
+                     <div className="flex justify-between">
                         <p className="px-[6px] py-px mr-[20px] bg-[#f1efef]" aria-label="Quantity">
                            {item.quantity}
                         </p>
