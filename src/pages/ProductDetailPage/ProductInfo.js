@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Card, CardMedia, Typography, Button, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { style } from '@mui/system';
 
 function ProductInfo({ id }) {
    // Option color
@@ -13,8 +14,8 @@ function ProductInfo({ id }) {
 
    // Sizes
    const [sizes, setSizes] = useState([]);
+   const [stock, setStock] = useState(0);
    const [activeSize, setActiveSize] = useState();
-
 
    const handleQuantity = (method) => {
       setInputValue((prev) => {
@@ -31,7 +32,6 @@ function ProductInfo({ id }) {
          console.log('option color', response.data);
          setOptionColor(response.data);
          setSizes(response.data.productSizes);
-         console.log('sizes', response.data.productSizes);
       };
 
       fetchAxios();
@@ -55,17 +55,24 @@ function ProductInfo({ id }) {
       );
    };
 
+   const handleClickSize = async (productId, sizeId) => {
+      const response = await axios.get(`http://localhost:3002/product-size/getStock`, {
+         params: { productId, sizeId },
+      });
+
+      setStock(response.data);
+   };
+
    // Custom MUI theme
    const theme = createTheme({
       typography: {
          fontFamily: '"Noto Sans", sans-serif',
-         h5: {
+         h4: {
             display: 'flex',
             fontSize: '1.5rem',
             alignItems: 'center',
             marginBottom: '10px',
-            gap: '5px',
-            // color: '#212529',
+            marginRight: '60px',
             color: '#000',
             fontWeight: '700',
          },
@@ -100,7 +107,7 @@ function ProductInfo({ id }) {
    return (
       <ThemeProvider theme={theme}>
          <Box>
-            <Typography variant="h5" marginBottom={4} sx={{ fontSize: '2.8rem', fontWeight: '700' }}>
+            <Typography variant="h2" marginBottom={4} sx={{ fontSize: '2.8rem', fontWeight: '700' }}>
                Giày Sandal Nam NOVA SD-11012
             </Typography>
 
@@ -116,21 +123,17 @@ function ProductInfo({ id }) {
                }}
             >
                <Typography
-                  variant="h4"
+                  variant="h3"
                   gap="15px"
                   sx={{ display: 'flex', alignItems: 'center', color: '#ff3D00', fontWeight: '700' }}
                >
                   327,750 VNĐ
                </Typography>
-
-               <Typography variant="h5">
-                  <span style={{}}>Tình trạng:</span> <b>Còn hàng(2)</b>
-               </Typography>
             </Box>
 
             {/* =============== Chọn màu sắc ===========*/}
-            <Box marginBottom={3}>
-               <Typography variant="h5" sx={{ marginTop: 3, fontWeight: '400' }}>
+            <Box variant="div" display="flex" marginBottom={6}>
+               <Typography variant="h4" sx={{ marginTop: 3, fontWeight: '400' }}>
                   Màu sắc
                </Typography>
                <Box sx={{ display: 'flex', gap: 2 }}>
@@ -147,47 +150,60 @@ function ProductInfo({ id }) {
             </Box>
 
             {/* =============== Chọn kích thước ================ */}
-            <Box variant="div" display="flex" justifyContent="space-between">
-               <Typography variant="h5" sx={{ marginTop: 3, fontWeight: '400' }}>
-                  Kích thước
-               </Typography>
+            <Box variant="div" marginBottom={6}>
+               <Box variant="div" display="flex" alignItems="center">
+                  <Typography variant="h4" sx={{ marginTop: 0, marginBottom: 0, fontWeight: '400' }}>
+                     Kích thước
+                  </Typography>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                     {sizes.map((item) => (
+                        <Button
+                           variant="h4"
+                           key={item.id}
+                           onClick={() => {
+                              setActiveSize(item.size.id);
+                              handleClickSize(item.product.id, item.size.id);
+                           }}
+                           sx={{
+                              fontSize: '1.5rem',
+                              width: '40px', // Tăng kích thước để vừa với chữ số
+                              height: '30px', // Đảm bảo chiều cao bằng chiều rộng
+                              minWidth: 0, // Loại bỏ minWidth mặc định của MUI
+                              paddingTop: 2, // Loại bỏ padding thừa
+                              paddingBottom: 2,
+                              paddingLeft: 4,
+                              paddingRight: 4,
+                              border: activeSize === item.size.id ? '2px solid #000 !important ' : '1px solid #e1e1e1 !important',
+                              borderRadius: '2',
+                           }}
+                        >
+                           {item.size.size}
+                        </Button>
+                     ))}
+                  </Box>
+               </Box>
+
                <Typography
-                  variant="h5"
-                  sx={{ marginTop: 3, fontWeight: '400', ':hover': { textDecoration: 'underline', cursor: 'pointer' } }}
+                  variant="h4"
+                  sx={{
+                     marginTop: 4,
+                     marginBottom: 0,
+                     fontWeight: '400',
+                     ':hover': { textDecoration: 'underline', cursor: 'pointer' },
+                  }}
                >
                   Hướng dẫn chọn size
                </Typography>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-               {sizes.map((item) => (
-                  <Button
-                     variant="h5"
-                     key={item.id}
-                     onClick={() => setActiveSize(item.size.id)}
-                     sx={{
-                        fontSize: '1.5rem',
-                        width: '40px', // Tăng kích thước để vừa với chữ số
-                        height: '30px', // Đảm bảo chiều cao bằng chiều rộng
-                        minWidth: 0, // Loại bỏ minWidth mặc định của MUI
-                        paddingTop: 2, // Loại bỏ padding thừa
-                        paddingBottom: 2,
-                        paddingLeft: 4,
-                        paddingRight: 4,
-                        border: activeSize === item.size.id ? '2px solid #000 !important ' : '1px solid #e1e1e1 !important',
-                        borderRadius: '2',
-                     }}
-                  >
-                     {item.size.size}
-                  </Button>
-               ))}
-            </Box>
 
             {/* =============== Số lượng =============== */}
-            <Box variant="div">
-               <Typography variant="h5" sx={{ marginTop: 5, fontWeight: '400' }}>
+
+            <Box variant="div" marginBottom={6} sx={{ display: 'flex', alignItems: 'center' }}>
+               <Typography variant="h4" sx={{ fontWeight: '400', marginBottom: 0 }}>
                   Số lượng
                </Typography>
-               <Box variant="div" className="itemQuantity" sx={{ display: 'flex', alignItems: 'center' }}>
+               <Box variant="div" className="itemQuantity" sx={{ display: 'flex', alignItems: 'center', marginRight: 3 }}>
                   <button
                      className="qtyBtn minusQuan w-14 border-t border-b border-l border-[#808080]"
                      data-type="minus"
@@ -206,8 +222,8 @@ function ProductInfo({ id }) {
                         setInputValue(value >= 1 ? value : ''); // Không cho nhập số nhỏ hơn 1
                      }}
                      className="w-16 text-center border outline-none [&::-webkit-inner-spin-button]:appearance-none 
-                              [&::-webkit-outer-spin-button]:appearance-none 
-                              [appearance:textfield]"
+                                [&::-webkit-outer-spin-button]:appearance-none 
+                                [appearance:textfield]"
                   />
                   <button
                      className="qtyBtn plusQuan w-14 border-t border-b border-r border-[#808080]"
@@ -217,6 +233,10 @@ function ProductInfo({ id }) {
                      +
                   </button>
                </Box>
+
+               <Typography variant="h4" sx={{ fontWeight: '400', marginBottom: 0 }}>
+                  {stock} sản phẩm có sẵn
+               </Typography>
             </Box>
 
             {/* =============== Nút mua hàng =============== */}
