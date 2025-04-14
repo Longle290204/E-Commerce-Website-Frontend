@@ -6,6 +6,8 @@ import styles from './shoppingCart.module.scss';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../../../../../Context/CartContext';
 import { useAxiosInstance } from '../../../../../api/axiosInstance';
+import { useNavigate } from 'react-router-dom';
+import isTokenValid from '../../../../../guards/IsTokenValid';
 
 const cx = classNames.bind(styles);
 
@@ -16,11 +18,18 @@ function MiniCart() {
 
    const cart = useContext(CartContext);
 
+   const navigate = useNavigate();
+   
    // Get data cart
    useEffect(() => {
       const axiosProducts = async () => {
          const accessToken = localStorage.getItem('accessToken');
          const currentTime = Date.now() / 1000;
+
+         if (!accessToken || !isTokenValid(accessToken)) {
+            console.log('Product not added');
+            navigate('/login');
+         }
 
          const response = await axiosInstance.get(`/cart`, {
             headers: {
@@ -28,8 +37,10 @@ function MiniCart() {
             },
          });
 
-         cart.setCartItems(response.data.cartItems);
-         cart.setCartTotal(response.data.cartTotal);
+         if (response) {
+            cart.setCartItems(response.data.cartItems);
+            cart.setCartTotal(response.data.cartTotal);
+         }
 
          console.log(currentTime);
          console.log(new Date(1739009739 * 1000).toLocaleString());
