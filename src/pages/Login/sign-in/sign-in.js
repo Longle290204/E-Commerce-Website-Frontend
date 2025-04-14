@@ -6,6 +6,7 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons'; // Import icon cụ thể
 import Image from '../../../layouts/images/image';
+import { jwtDecode } from 'jwt-decode';
 
 function SignIn() {
    const cx = classNames.bind(styles);
@@ -34,12 +35,28 @@ function SignIn() {
             username: signInUsername,
             password: signInPassword,
          });
-         console.log(response);
+         console.log('test login', response);
          localStorage.setItem('accessToken', response.data.accessToken);
          localStorage.setItem('refreshToken', response.data.refreshToken);
 
-         // Chuyển hướng đến trang home
-         navigate('/');
+         const token = localStorage.getItem('accessToken');
+
+         if (token) {
+            const decoded = jwtDecode(token);
+
+            console.log('decode', decoded.username);
+
+            // Ví dụ payload có thể là:
+            // { sub: 1, username: "admin", role: "superadmin", exp: 123456 }
+
+            if (decoded.username === 'superadmin') {
+               // chuyển hướng đến trang admin
+               window.location.href = '/admin';
+            } else {
+               // chuyển hướng đến trang home
+               window.location.href = '/';
+            }
+         }
       } catch (error) {
          setSignInErrors(newErrors);
          console.error('Đăng nhập thất bại:', error);
