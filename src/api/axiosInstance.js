@@ -11,7 +11,6 @@ const axiosInstance = axios.create({
 export default axiosInstance;
 
 export const useAxiosInstance = () => {
-   
    const navigate = useNavigate();
 
    axiosInstance.interceptors.response.use(
@@ -28,8 +27,9 @@ export const useAxiosInstance = () => {
                console.log(refreshToken);
 
                if (!refreshToken) {
-                  navigate('/login');
-                  throw new Error('No refresh token found');
+                  // navigate('/login');
+                  // throw new Error('No refresh token found');
+                  return;
                }
 
                const refreshResponse = await axios.post(`http://localhost:3002/auth/refreshToken`, {
@@ -57,6 +57,7 @@ export const useAxiosInstance = () => {
                return Promise.reject(refreshError);
             }
          }
+
          // Nếu lỗi không phải là 401, trả về lỗi
          return Promise.reject(error);
       },
