@@ -16,9 +16,9 @@ const publicRoutes = [
    { path: '/', element: Home },
    { path: '/cart', element: Cart },
    { path: '/login', element: LoginForm },
-   { path: '/admin', element: Dashboard, layout: AdminPage },
+   { path: '/admin', element: Dashboard, layout: AdminPage, protected: true },
    { path: '/checkout', element: CheckoutPage },
-   { path: '/cartpage', element: CartPage },
+   { path: '/cartpage', element: CartPage, protected: true },
    { path: '/collection/:slug', element: ProductsNewPage },
    { path: '/products/:slug', element: ProductDetail },
    {

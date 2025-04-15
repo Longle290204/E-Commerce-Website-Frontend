@@ -4,6 +4,7 @@ import DefaultLayout from './layouts/DefaultLayout/defaultLayout';
 import { Fragment } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import ProtectedRoute from './guards/ProtectedRoute';
 
 function App() {
    return (
@@ -25,9 +26,17 @@ function App() {
                         key={index}
                         path={route.path}
                         element={
-                           <Layout>
-                              <Page />
-                           </Layout>
+                           route.protected ? (
+                              <ProtectedRoute>
+                                 <Layout>
+                                    <Page />
+                                 </Layout>
+                              </ProtectedRoute>
+                           ) : (
+                              <Layout>
+                                 <Page />
+                              </Layout>
+                           )
                         }
                      />
                   );
