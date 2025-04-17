@@ -2,7 +2,6 @@ import Cart from '../pages/Cart/cart';
 import Home from '../pages/Home/home';
 import LoginForm from '../pages/Login/login';
 import AdminPage from '../pages/AdminPage/AdminPage';
-import ProductAdminPage from '../pages/AdminPage/ProductAdminPage/ProductAdminPage';
 import Dashboard from '../pages/AdminPage/Dashboard/Dashboard';
 import CreateProductPage from '../pages/AdminPage/CreateProductPage/CreateProductPage';
 import ListProductPage from '../pages/AdminPage/ListProductPage/ListProductPage';
@@ -21,11 +20,7 @@ const publicRoutes = [
    { path: '/cartpage', element: CartPage, protected: true },
    { path: '/collection/:slug', element: ProductsNewPage },
    { path: '/products/:slug', element: ProductDetail },
-   {
-      path: '/admin/products',
-      element: ProductAdminPage,
-      layout: AdminPage,
-   },
+
    {
       path: '/admin/create-product',
       element: CreateProductPage,
