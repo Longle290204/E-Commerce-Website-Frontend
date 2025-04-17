@@ -6,11 +6,7 @@ import { Link } from 'react-router-dom';
 import useTokenValidation from '../../hooks/useTokenValidation';
 import { useAxiosInstance } from '../../api/axiosInstance';
 import isTokenValid from '../../guards/IsTokenValid';
-import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
-import styles from './ProductsNew.module.scss';
-
-const cx = classNames.bind(styles);
 
 function ProductsNew({ products }) {
    const cart = useContext(CartContext);
@@ -82,15 +78,17 @@ function ProductsNew({ products }) {
       const axiosFavoriteProduct = async () => {
          try {
             const response = await axiosInstance.get(`/favorites-product`);
-            console.log('favorite product:', response.data);
 
             // Giả sử response.data là mảng các favoriteProduct và mỗi phần tử có dạng:
             // { id, product: { id, ... } }
             const favoriteMapping = {};
-            response.data.forEach((favoriteProduct) => {
-               // Lưu trạng thái yêu thích cho productId tương ứng
-               favoriteMapping[favoriteProduct.product.id] = true;
-            });
+
+            if (response) {
+               response.data.forEach((favoriteProduct) => {
+                  // Lưu trạng thái yêu thích cho productId tương ứng
+                  favoriteMapping[favoriteProduct.product.id] = true;
+               });
+            }
 
             setFavoriteStatus(favoriteMapping);
          } catch (error) {
