@@ -1,0 +1,119 @@
+:root {
+  --swiper-navigation-size: 28px;
+
+  /* --swiper-navigation-top-offset: 50%; */
+  /* --swiper-navigation-sides-offset: 10px; */
+  --swiper-navigation-color: var(--swiper-theme-color);
+}
+.swiper-button-prev,
+.swiper-button-next {
+  position: absolute;
+  top: var(--swiper-navigation-top-offset, 43%);
+  /* width: calc(var(--swiper-navigation-size) / 44 * 27); */
+  width: 28px;
+  height: var(--swiper-navigation-size);
+  margin-top: calc(0px - (var(--swiper-navigation-size) / 2));
+  z-index: 100000;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #c8c5c5;
+  align-items: center;
+  justify-content: center;
+  color: var(--swiper-navigation-color, var(--swiper-theme-color), red);
+  /* background: ; */
+  opacity: 0;
+  transition: all 0.5s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-hover:hover > .swiper-button-next,
+.swiper-hover:hover > .swiper-button-prev {
+  opacity: 1;
+}
+
+.swiper-button-prev.swiper-button-disabled,
+.swiper-button-next.swiper-button-disabled {
+  opacity: 0.35;
+  cursor: auto;
+  pointer-events: none;
+}
+.swiper-button-prev.swiper-button-hidden,
+.swiper-button-next.swiper-button-hidden {
+  opacity: 10;
+  cursor: auto;
+  pointer-events: none;
+}
+.swiper-navigation-disabled .swiper-button-prev,
+.swiper-navigation-disabled .swiper-button-next {
+  display: none !important;
+}
+.swiper-button-prev svg,
+.swiper-button-next svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center;
+}
+.swiper-rtl .swiper-button-prev svg,
+.swiper-rtl .swiper-button-next svg {
+  transform: rotate(180deg);
+}
+
+.swiper-button-prev,
+.swiper-rtl .swiper-button-next {
+  left: var(--swiper-navigation-sides-offset, 10px);
+  right: auto;
+}
+.swiper-button-next,
+.swiper-rtl .swiper-button-prev {
+  right: var(--swiper-navigation-sides-offset, 10px);
+  left: auto;
+}
+.swiper-button-lock {
+  display: none;
+}
+/* Navigation font start */
+.swiper-button-prev:after,
+.swiper-button-next:after {
+  /* font-family: swiper-icons; */
+  font-size: var(--swiper-navigation-size);
+  text-transform: none !important;
+  letter-spacing: 0;
+  font-variant: initial;
+  line-height: 1;
+}
+.swiper-button-prev:after,
+.swiper-rtl .swiper-button-next:after {
+  z-index: 1000;
+  content: "";
+  position: absolute;
+  display: block;
+  width: 15px;
+  height: 15px;
+  transition: all 0.5s;
+  background-color: transparent;
+  background-image: url("/src/assets/svg/prev.svg");
+  background-size: cover;
+}
+/* .swiper-button-next,
+.swiper-rtl .swiper-button-prev {
+    right: var(--swiper-navigation-sides-offset, 13px);
+    left: auto;
+    transition: all 0.5s;
+} */
+.swiper-button-next:after,
+.swiper-rtl .swiper-button-prev:after {
+  z-index: 1000;
+  content: "";
+  position: absolute;
+  display: block;
+  width: 15px;
+  height: 15px;
+  transition: all 0.5s;
+  background-color: transparent;
+  background-image: url("/src/assets/svg/next.svg");
+  background-size: cover;
+}
+/* Navigation font end */
