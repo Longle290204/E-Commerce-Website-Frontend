@@ -15,10 +15,10 @@ function App() {
                {publicRoutes.map((route, index) => {
                   const Page = route.element;
                   let Layout = DefaultLayout;
-                  if (route.layout) {
-                     Layout = route.layout;
-                  } else if (route.layout === null) {
+                  if (route.layout === null) {
                      Layout = Fragment;
+                  } else if (route.layout) {
+                     Layout = route.layout;
                   }
 
                   return (
