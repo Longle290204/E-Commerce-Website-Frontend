@@ -25,8 +25,10 @@ function Right() {
 
          // Set dữ liệu vào context
          cart.setCartItems(response.data.cartItems);
-         cart.setQuantityTotalProduct(response.data.quantityTotal);
          cart.setCartTotal(response.data.cartTotal);
+
+         // Set quantity total product
+         cart.setQuantityProduct(response.data.quantityProduct);
 
          // Đếm số phần tử trong mảng cartItems và set count
          const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
@@ -68,8 +70,10 @@ function Right() {
          <hr className="border-t border-solid border-[#d3d7da] mt-9 mb-9"></hr>
 
          <div className="flex justify-between">
-            <p>{cart.quantityTotalProduct} sản phẩm</p>
-            <span>{cart.cartTotal}đ</span>
+            <p>
+               <span className={cx('quantity')}>{cart.quantityProduct}</span> sản phẩm
+            </p>
+            <span>{cart.cartTotal} đ</span>
          </div>
          <div className="flex justify-between mb-7">
             <p>Giao hàng</p>
