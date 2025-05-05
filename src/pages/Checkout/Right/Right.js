@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../../Context/CartContext';
-import axiosInstance from '../../../api/axiosInstance';
+import { useAxiosInstance } from '../../../api/axiosInstance';
 import images from '../../../assets/images/image';
 import classNames from 'classnames/bind';
 import styles from './Right.module.scss';
@@ -9,6 +9,7 @@ const cx = classNames.bind(styles);
 
 function Right() {
    const cart = useContext(CartContext);
+   const axiosInstance = useAxiosInstance();
 
    const [countCartItem, setCountCartItem] = useState(0);
 
