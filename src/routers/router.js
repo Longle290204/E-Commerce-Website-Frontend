@@ -10,17 +10,21 @@ import CheckoutPage from '../pages/Checkout/checkout';
 import CartPage from '../pages/CartPage/CartPage';
 import ProductsNewPage from '../pages/ProductsNewPage/ProductsNewPage';
 import ProductDetail from '../pages/ProductDetailPage/ProductDetail';
+import PaymentPage from '../pages/PaymentPage/PaymentPage';
+import CheckoutLayout from '../layouts/CheckoutLayout/CheckoutLayout';
+import SuccessPayment from '../pages/success-payment/success-payment';
 
 const publicRoutes = [
    { path: '/', element: Home },
    { path: '/cart', element: Cart },
    { path: '/login', element: LoginForm },
    { path: '/admin', element: Dashboard, layout: AdminPage, protected: true },
-   { path: '/checkout', element: CheckoutPage },
+   { path: '/checkout', element: CheckoutPage, layout: CheckoutLayout },
    { path: '/cartpage', element: CartPage, protected: true },
    { path: '/collection/:slug', element: ProductsNewPage },
    { path: '/products/:slug', element: ProductDetail },
-
+   { path: '/checkout/paymentPage', element: PaymentPage, layout: CheckoutLayout },
+   { path: 'checkout/success-payment', element: SuccessPayment, layout: CheckoutLayout },
    {
       path: '/admin/create-product',
       element: CreateProductPage,
