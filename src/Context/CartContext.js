@@ -5,7 +5,7 @@ export const CartContext = createContext();
 function CartProvider({ children }) {
    const [cartItems, setCartItems] = useState([]);
    const [cartTotal, setCartTotal] = useState(0);
-   const [quantityTotalProduct, setQuantityTotalProduct] = useState(0);
+   const [quantityProduct, setQuantityProduct] = useState(0);
    const [products, setProducts] = useState([]);
 
    return (
@@ -17,8 +17,8 @@ function CartProvider({ children }) {
             setCartTotal,
             products,
             setProducts,
-            quantityTotalProduct,
-            setQuantityTotalProduct,
+            quantityProduct,
+            setQuantityProduct,
          }}
       >
          {children}
