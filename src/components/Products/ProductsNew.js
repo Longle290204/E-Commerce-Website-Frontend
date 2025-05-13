@@ -5,8 +5,11 @@ import { ReactComponent as HeartIcon } from '../../assets/svg/heart.svg';
 import { Link } from 'react-router-dom';
 import useTokenValidation from '../../hooks/useTokenValidation';
 import { useAxiosInstance } from '../../api/axiosInstance';
-import isTokenValid from '../../guards/IsTokenValid';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames/bind';
+import styles from './ProductList/ProductsNew.module.scss';
+
+const cx = classNames.bind(styles);
 
 function ProductsNew({ products }) {
    const cart = useContext(CartContext);
@@ -19,42 +22,6 @@ function ProductsNew({ products }) {
    const refreshToken = localStorage.getItem('refreshToken');
    console.log('accessToken: ', accessToken);
    console.log('refreshToken: ', refreshToken);
-
-   const handleAddToCart = async (productId) => {
-      try {
-         const accessToken = localStorage.getItem('accessToken');
-         if (!accessToken || !isTokenValid(accessToken)) {
-            console.log('Product not added');
-            navigate('/login');
-         } else {
-            await axiosInstance.post(
-               `/cart`,
-               {
-                  productId,
-                  quantity: 1,
-               },
-               {
-                  headers: {
-                     Authorization: `Bearer ${accessToken}`,
-                  },
-               },
-            );
-
-            // Lấy danh sách mới nhất từ API để cập nhật mini cart ngay khi thêm
-            const updatedCartResponse = await axiosInstance.get(`/cart`, {
-               headers: {
-                  Authorization: `Bearer ${accessToken}`,
-               },
-            });
-
-            console.log('response', updatedCartResponse.data);
-
-            cart.setCartItems(updatedCartResponse.data.cartItems); // Cập nhật lại giỏ hàng với dữ liệu mới nhất
-         }
-      } catch (error) {
-         console.log('Error fetching cart data:', error);
-      }
-   };
 
    const handleProductClick = async (slug, id) => {
       console.log('Product slug:', slug);
@@ -123,23 +90,36 @@ function ProductsNew({ products }) {
 
    return (
       <section>
-         <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 bg-[white] p-3">
+         <div className="h-[469px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 bg-[white] p-3 mb-4">
             {products.map((product, id) => (
-               <article key={id} className="relative flex flex-col items-center group">
+               <article
+                  key={id}
+                  className="relative flex flex-col items-center group border border-solid border-[rgb(172, 171, 171)]"
+               >
                   <HeartIcon
-                     className="absolute right-4 top-4 cursor-pointer"
+                     className="absolute right-4 top-4 cursor-pointer z-50"
                      fill={favoriteStatus[product.id] ? '#E35353' : '#000'}
                      onClick={() => toggleFavorite(product.id)}
                   />
                   {/* <img className="absolute right-4 top-4 " src={images.heart} alt="heart" /> */}
-                  <img
-                     className="w-[320px] h-[320px] cursor-pointer object-cover pr-[-1px] pl-[-1px]"
-                     src={product.mainImage}
-                     alt={product.name}
-                     onClick={() => {
-                        handleProductClick(product.slug, product.id);
-                     }}
-                  />
+                  <div className={cx('image-container')}>
+                     <img
+                        className={cx('main-image', 'bg-gray-100')}
+                        src={product.mainImage}
+                        alt={product.name}
+                        onClick={() => {
+                           handleProductClick(product.slug, product.id);
+                        }}
+                     />
+                     <img
+                        className={cx('hover-image', 'bg-gray-100')}
+                        src={product.hoverImage}
+                        alt={product.name}
+                        onClick={() => {
+                           handleProductClick(product.slug, product.id);
+                        }}
+                     />
+                  </div>
                   <p
                      className="text-[1.4rem] mt-4 ml-4 mr-4 font-medium  cursor-pointer hover:text-blue-500 [transition:ease-in-out_0.3s]"
                      onClick={() => handleProductClick(product.slug, product.id)}
@@ -147,24 +127,12 @@ function ProductsNew({ products }) {
                      {product.name}
                   </p>
                   <p className="text-[1.4rem] font-medium text-[red] ml-[20px] mt-[10px]">{product.price}</p>
-                  <section className="flex opacity-0 mt-6  mr-2  mb-2  ml-2 gap-[0.63rem] transition-opacity ease-linear duration-200 group-hover:opacity-100">
-                     <button className="bg-[#dab900] w-[135px] h-[32px] rounded-[4px] cursor-pointer">Xem nhanh</button>
-                     <button
-                        className="bg-[#da0020] w-[135px] h-[32px] rounded-[4px] cursor-pointer active:bg-[#e4b2b9] [transition:ease-in-out_0.1s]"
-                        onClick={() => {
-                           console.log('product.id', product.id);
-                           handleAddToCart(product.id);
-                        }}
-                     >
-                        Thêm vào giỏ
-                     </button>
-                  </section>
                </article>
             ))}
          </div>
 
          <Link to="collection/san-pham-moi">
-            <div className="flex items-center  gap-[0.63rem] transition-opacity ease-linear duration-200 group-hover:opacity-100">
+            <div className="flex items-center gap-[0.63rem] transition-opacity ease-linear duration-200 group-hover:opacity-100">
                <button className="mx-auto text-2xl font-semibold underline">XEM THÊM</button>
             </div>
          </Link>

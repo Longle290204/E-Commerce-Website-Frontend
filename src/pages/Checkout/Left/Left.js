@@ -3,8 +3,16 @@ import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Left.module.scss';
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 function Left() {
+   // const location = useLocation();
+   // const { state } = location;
+
+   const navigate = useNavigate();
+
    const cx = classNames.bind(styles);
    const [formData, setFormData] = useState({
       email: '',
@@ -140,23 +148,24 @@ function Left() {
       try {
          const response = await axios.post(`http://localhost:3002/auth/checkIfExist`, { [field]: value });
          console.log(response.data.exists);
-         return response.data.exists
-            ? field === 'fullName'
-               ? `Tên đăng nhập đã tồn tại`
-               : `Số điện thoại đã tồn tại`
-            : '';
+         return response.data.exists ? (field === 'fullName' ? `Tên đăng nhập đã tồn tại` : `Số điện thoại đã tồn tại`) : '';
       } catch (error) {
          console.error('Lỗi kiểm tra tồn tại:', error);
          return 'Lỗi kết nối, vui lòng thử lại';
       }
    };
 
-   const validateAll = () => {
+   const validateAll = async () => {
       const newErrors = {};
-      Object.keys(formData).forEach(async (field) => {
-         const error = await validateField(field, formData[field]);
-         if (error) newErrors[field] = error;
-      });
+      const fieldEntries = Object.entries(formData);
+
+      await Promise.all(
+         fieldEntries.map(async ([field, value]) => {
+            const error = await validateField(field, value);
+            if (error) newErrors[field] = error;
+         }),
+      );
+
       return newErrors;
    };
 
@@ -174,30 +183,42 @@ function Left() {
       setErrors((prev) => ({ ...prev, [name]: error }));
    };
 
-   const handleSubmit = async (e) => {
+   const handlePayment = async (e) => {
       e.preventDefault();
 
-      const newErrors = validateAll();
-      if (Object.keys(newErrors).length > 0) {
-         setErrors(newErrors);
-         return;
-      }
+      const validationErrors = await validateAll();
+      setErrors(validationErrors);
 
-      try {
-         const response = await axios.post('http://localhost:3002/auth/signUp', {
-            fullName: formData.fullName,
-            phoneNumber: formData.phoneNumber,
-            address: formData.address,
-         });
-         alert('Đăng ký thành công! Bạn có thể đăng nhập ngay.');
-         console.log(response.data);
-      } catch (error) {
-         console.error(error.message);
-      }
+      // if (Object.keys(validationErrors).length > 0) {
+      //    console.log('Có lỗi, không gửi thanh toán');
+      //    return;
+      // }
+
+      navigate('/checkout/paymentPage');
+
+      // navigate('/payment', {
+      //    state: {
+      //       email: formData.email,
+      //       fullName: formData.fullName,
+      //       phoneNumber: formData.phoneNumber,
+      //       address: formData.address,
+      //       city: formData.city,
+      //       district: formData.district,
+      //       ward: formData.ward,
+      //    },
+      // });
+
+      // try {
+      //    const response = await axios.post('https://9259-27-73-211-13.ngrok-free.app/payment/create_payment_url');
+      //    console.log(response.data);
+      //    window.location.href = response.data; // đảm bảo đây là URL
+      // } catch (error) {
+      //    console.error('Lỗi khi tạo thanh toán:', error);
+      // }
    };
 
    return (
-      <form onSubmit={handleSubmit} noValidate className={cx('form-signUp', 'col-span-6 w-full')}>
+      <form onSubmit={handlePayment} noValidate className={cx('form-signUp', 'col-span-6 w-full')}>
          <div className="w-2/4 mb-10">
             <h2 className="text-3xl font-semibold mb-10">LIÊN HỆ</h2>
             <div className="relative">
@@ -256,10 +277,7 @@ function Left() {
             {/* Dropdown Thành phố */}
             <div className=" flex-col w-1/3">
                <select
-                  className={cx(
-                     'w-full border border-solid border-[#767677] p-5 mb-3',
-                     errors['city'] ? 'input-form-wrong' : '',
-                  )}
+                  className={cx('w-full border border-solid border-[#767677] p-5 mb-3', errors['city'] ? 'input-form-wrong' : '')}
                   name="city"
                   value={selectedCity}
                   onChange={(e) => {
@@ -308,10 +326,7 @@ function Left() {
             {/* Dropdown ward */}
             <div className=" flex-col w-1/3">
                <select
-                  className={cx(
-                     'w-full border border-solid border-[#767677] p-5 mb-3',
-                     errors['ward'] ? 'input-form-wrong' : '',
-                  )}
+                  className={cx('w-full border border-solid border-[#767677] p-5 mb-3', errors['ward'] ? 'input-form-wrong' : '')}
                   name="ward"
                   value={selectedWard}
                   onChange={(e) => {
@@ -335,8 +350,12 @@ function Left() {
             <Link to="/cart" className="whitespace-nowrap hover:text-[#fac02b] transition-colors duration-200">
                Giỏ hàng
             </Link>
-            <button className="w-2/3 bg-[#000] text-white p-6 rounded text-center font-semibold hover:bg-slate-800">
-               THANH TOÁN
+
+            <button
+               className="w-2/3 bg-[#000] text-white p-6 rounded text-center font-semibold hover:bg-slate-800"
+               onClick={handlePayment}
+            >
+               ĐẾN PHƯƠNG THỨC THANH TOÁN
             </button>
          </div>
       </form>

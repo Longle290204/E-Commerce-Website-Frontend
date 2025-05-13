@@ -5,6 +5,8 @@ import styles from './Home.module.scss';
 import ProductSlider from '../../components/Products/Product-slide/Product-slide';
 import SlideBanner from '../../components/SlideBanner/SlideBannerImage/SlideBaner';
 import ProductsNew from '../../components/Products/ProductsNew';
+import CategoryBanner from '../../components/CategoryBanner/CategoryBanner';
+import SlideBlogBanner from '../../components/SlideBlogBanner/SlideBlogBanner';
 
 const cx = classNames.bind(styles);
 
@@ -47,7 +49,7 @@ function Home() {
             <section className={cx('flex flex-col items-center w-full bg-[#f4f4f4]')}>
                <div className={cx('w-[var(--default-layout-width)] pb-10')}>
                   {/* ------------- */}
-                  <div className={cx('flex flex-col align-middle items-center mb-6')}>
+                  <div className={cx('category', 'flex flex-col align-middle items-center')}>
                      <span className={cx('mt-5 text-amber-400 font-semibold')}>LEVION</span>
                      <h2 className="text-3xl font-semibold mt-5">SẢN PHẨM BÁN CHẠY</h2>
                   </div>
@@ -62,11 +64,29 @@ function Home() {
                </div>
             </section>
             <section className="max-w-[1340px]">
-               <div className={cx('flex flex-col align-middle items-center mb-6')}>
+               <div className={cx('category', 'flex flex-col align-middle items-center')}>
                   <span className={cx('mt-5 text-amber-400 font-semibold')}>LEVION</span>
                   <h2 className="text-3xl font-semibold mt-5">SẢN PHẨM MỚI</h2>
                </div>
                <ProductsNew products={products} />
+            </section>
+            <section className="mt-10">
+               <div className={cx('category', 'flex flex-col align-middle items-center')}>
+                  <span className={cx('mt-5 text-amber-400 font-semibold')}>LEVION</span>
+                  <h2 className="text-3xl font-semibold mt-5">PHÂN LOẠI SẢN PHẨM</h2>
+               </div>
+               <CategoryBanner />
+            </section>
+            <section className={cx('flex flex-col items-center w-full mt-20')}>
+               <div className={cx('w-[var(--default-layout-width)] pb-10')}>
+                  <div className={cx('category', 'flex flex-col align-middle items-center')}>
+                     <span className={cx('mt-5 text-amber-400 font-semibold')}>LEVION</span>
+                     <h2 className="text-3xl font-semibold mt-5">TIN TỨC MỚI</h2>
+                  </div>
+                  <div>
+                     <SlideBlogBanner />
+                  </div>
+               </div>
             </section>
          </div>
       </section>

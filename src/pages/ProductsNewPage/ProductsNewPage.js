@@ -5,6 +5,7 @@ import Breadcrumb from '../../routers/Breadcrumb';
 import { usePaginationProducts } from '../../hooks/usePaginationProducts';
 import PaginationPage from '../../components/function/Pagination/PaginationPage';
 import { useParams } from 'react-router-dom';
+import FilterOption from '../../components/function/FilterOption/FilterOption';
 
 function ProductsNewPage() {
    const { slug } = useParams();
@@ -30,7 +31,12 @@ function ProductsNewPage() {
    // currentPage, totalPages, onPageChange;
    return (
       <div className="max-w-[1340px]">
-         <Breadcrumb type={type} />
+         <div className="mb-20">
+            <Breadcrumb type={type} />
+         </div>
+         <div className="mb-16">
+            <FilterOption />
+         </div>
          <ProductTemplate products={productsContext.products} />
          <div className="flex justify-center">
             <PaginationPage currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />

@@ -19,36 +19,37 @@ function MiniCart() {
    const cart = useContext(CartContext);
 
    const navigate = useNavigate();
-   
+
    // Get data cart
    useEffect(() => {
       const axiosProducts = async () => {
          const accessToken = localStorage.getItem('accessToken');
          const currentTime = Date.now() / 1000;
 
-         if (!accessToken || !isTokenValid(accessToken)) {
+         try {
+
+            const response = await axiosInstance.get(`/cart`, {
+               headers: {
+                  Authorization: `Bearer ${accessToken}`,
+               },
+            });
+
+            if (response) {
+               cart.setCartItems(response.data.cartItems);
+               cart.setCartTotal(response.data.cartTotal);
+            }
+
+            console.log(currentTime);
+            console.log(new Date(1739009739 * 1000).toLocaleString());
+
+            // Đếm số lần phần tử trong mảng cartIs và set count
+            const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
+            setCountCartItem(countItems);
+            // setCart();
+         } catch (error) {
             console.log('Product not added');
             navigate('/login');
          }
-
-         const response = await axiosInstance.get(`/cart`, {
-            headers: {
-               Authorization: `Bearer ${accessToken}`,
-            },
-         });
-
-         if (response) {
-            cart.setCartItems(response.data.cartItems);
-            cart.setCartTotal(response.data.cartTotal);
-         }
-
-         console.log(currentTime);
-         console.log(new Date(1739009739 * 1000).toLocaleString());
-
-         // Đếm số lần phần tử trong mảng cartIs và set count
-         const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
-         setCountCartItem(countItems);
-         // setCart();
       };
 
       axiosProducts();

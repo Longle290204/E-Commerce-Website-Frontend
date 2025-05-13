@@ -25,7 +25,7 @@ function CreateProductAdmin({ setCountProduct }) {
       console.log('categoryIds', categoryIds);
       e.preventDefault();
       const formData = new FormData();
-      formData.append('image', imageURL);
+      formData.append('images', imageURL);
       formData.append('name', productName);
       formData.append('price', Number(productPrice));
       formData.append('status', status);

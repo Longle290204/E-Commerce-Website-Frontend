@@ -51,6 +51,16 @@ function Navbar({ children }) {
       };
    }, [lastScrollTop]);
 
+   const handleClickProfile = () => {
+
+      const token = localStorage.getItem('accessToken');
+      console.log('accessToken', token);
+      console.log('refreshToken', localStorage.getItem('refreshToken'));
+      
+      localStorage.removeItem('accessToken');
+      // localStorage.removeItem('refreshToken');
+   };
+
    return (
       <div className={cx('wrapper', 'w-screen')}>
          <div
@@ -68,7 +78,7 @@ function Navbar({ children }) {
                     }, // Nếu transformNav đúng, thì chỉ thay đổi opacity
             }}
          >
-            <nav className={cx('inner-nav', 'flex items-center justify-between')}>
+            <nav className={cx('inner-nav', 'xl:w-[1432px] flex items-center justify-between')}>
                <div className={cx('header-wrap-logo')}>
                   <Link to="/">
                      <img src={images.logoLevion} alt="Levion" className="w-[95px] h-[60px]" />
@@ -202,7 +212,7 @@ function Navbar({ children }) {
                </div>
 
                <div className={cx('profile-menu')}>
-                  <div>
+                  <div onClick={() => handleClickProfile()}>
                      <Image iconName={'profileIcon'} />
                   </div>
 

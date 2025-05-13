@@ -1,64 +1,65 @@
 .slide-banner-wrapper-img {
-  width: 1912px;
+   width: 1912px;
 }
 
 .slide-banner-img {
-  width: 1912px;
+   width: 1912px;
 }
 
 :global {
-  .slide-banner {
-    padding: 0 0 30px;
-  }
+   .slide-banner {
+      padding: 0 0 30px;
+   }
 
-  .slide-banner .swiper-button-next,
-  .slide-banner .swiper-button-prev {
-    width: 30px !important;
-    height: 30px !important;
-    color: #fff !important;
-    background-color: #fff;
-    border: 1px solid #c8c5c5;
-    cursor: pointer;
-    opacity: 0;
-    transition: all 0.5s;
-  }
+   .slide-banner .swiper-button-next,
+   .slide-banner .swiper-button-prev {
+      width: 30px !important;
+      height: 30px !important;
+      color: #fff !important;
+      background-color: #fff;
+      border: 1px solid #c8c5c5;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.5s;
+   }
 
-  .slide-banner:hover > .swiper-button-next,
-  .slide-banner:hover > .swiper-button-prev {
-    opacity: 1;
-  }
+   .slide-banner:hover > .swiper-button-next,
+   .slide-banner:hover > .swiper-button-prev {
+      opacity: 1;
+   }
 
-  .swiper-button-next {
-    right: 10px !important;
-  }
+   .swiper-button-next {
+      right: 10px !important;
+   }
 
-  .swiper-button-prev {
-    left: 10px !important;
-  }
+   .swiper-button-prev {
+      left: 10px !important;
+   }
 
-  .swiper-button-prev:after {
-    z-index: 1000;
-    content: "";
-    position: absolute;
-    display: block;
-    width: 15px;
-    height: 15px;
-    transition: all 0.5s;
-    background-color: transparent;
-    background-image: url("../../../assets/svg/prev.svg");
-    background-size: cover;
-  }
+   .swiper-button-prev:after {
+      z-index: 1000;
+      content: '';
+      position: absolute;
+      display: block;
+      width: 15px;
+      height: 15px;
+      transition: all 0.5s;
+      background-color: transparent;
+      background-image: url('../../../assets/svg/prev.svg');
+      background-size: cover;
+   }
 
-  .swiper-button-next:after {
-    z-index: 1000;
-    content: "";
-    position: absolute;
-    display: block;
-    width: 15px;
-    height: 15px;
-    transition: all 0.5s;
-    background-color: transparent;
-    background-image: url("../../../assets/svg/next.svg");
-    background-size: cover;
-  }
+   .swiper-button-next:after {
+      z-index: 1000;
+      content: '';
+      position: absolute;
+      display: block;
+      width: 15px;
+      height: 15px;
+      transition: all 0.5s;
+      background-color: transparent;
+      background-image: url('../../../assets/svg/next.svg');
+      background-size: cover;
+   }
 }
+
