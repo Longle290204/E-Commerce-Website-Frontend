@@ -14,10 +14,15 @@ function FavoriteLayer() {
 
    useEffect(() => {
       const axiosFavoriteProduct = async () => {
-         const response = await axiosInstance.get(`/favorites-product`);
-         console.log('favorite product:', response.data);
+         const response = await axiosInstance.get(`/favorites-product`, {
+            headers: {
+               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+         });
 
-         setFavoriteProducts(response.data);
+         if (response) {
+            setFavoriteProducts(response.data);
+         }
       };
 
       axiosFavoriteProduct();
