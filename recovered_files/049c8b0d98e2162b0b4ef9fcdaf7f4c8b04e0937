@@ -1,0 +1,35 @@
+@tailwind utilities;
+@tailwind base;
+@tailwind components;
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+.swiper-pagination-bullet {
+   width: 15px;
+   height: 5px;
+   opacity: 0.5 !important;
+   background-color: #cbcbcb;
+   border-radius: 0 !important; /* Ghi đè giá trị border-radius */
+   transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+   opacity: 1 !important;
+   background-color: gray !important;
+   /* transform: scale(1.2) !important; */
+   border-radius: 0 !important; /* Ghi đè giá trị border-radius */
+}
+
+.custom-treeselect {
+   padding: 10px;
+   /* border: none !important; 
+   background: none; */
+   /* box-shadow: none !important; */
+}
+
+.ant-select-selector {
+   border: none !important;
+   background: none !important;
+}

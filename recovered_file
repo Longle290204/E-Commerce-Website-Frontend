@@ -1,0 +1,649 @@
+commit 1cdb3473c1fef7ed5c2879e2a04827c903a4ab93
+Merge: 46b877a 6d53dc8
+Author: Longle290204 <longvis2004@gmail.com>
+Date:   Thu Jan 9 16:54:09 2025 +0700
+
+    WIP on main: 46b877a feat: Create product admin page
+
+diff --cc src/components/function/CategorySelector/CategorySelector.js
+index c38001c,c38001c..bbe0ac1
+--- a/src/components/function/CategorySelector/CategorySelector.js
++++ b/src/components/function/CategorySelector/CategorySelector.js
+@@@ -1,52 -1,52 +1,68 @@@
+--import React, { useEffect, useState } from "react";
+--import Select from "react-select";
+--import axios from "axios";
+--import makeAnimated from "react-select/animated";
+++import React, { useEffect, useState } from 'react';
+++import classNames from 'classnames/bind';
+++import styles from './CategorySelector.module.scss';
+++import axios from 'axios';
+++import { TreeSelect } from 'antd';
+++
+++const cx = classNames.bind(styles);
+  
+  function CategorySelector({ onChangeCategoryIds }) {
+--    const [options, setOptions] = useState([]);
+--    const [selectedCategories, setSelectedCategories] = useState([]);
+++   const [treeData, setTreeData] = useState([]);
+++   const [selectedCategories, setSelectedCategories] = useState();
+  
+--    const animatedComponents = makeAnimated();
+++   // Sử dụng đệ quy để chuyển dữ liệu thành tree đầy đủ cha - con
+++   const transformData = (data) => {
+++      return data.map((category) => ({
+++         title: category.name,
+++         value: category.id,
+++         children: category.subcategories ? transformData(category.subcategories) : [],
+++      }));
+++   };
+  
+--    useEffect(() => {
+--        const axiosData = async () => {
+++   useEffect(() => {
+++      // Nhận về mảng các danh mục
+++      const axiosData = async () => {
+++         try {
+              const response = await axios.get(`http://localhost:3002/category`);
+--            try {
+--                const categoryOptions = response.data.map((category) => ({
+--                    label: category.name,
+--                    value: category.id,
+--                }));
+--
+--                setOptions(categoryOptions);
+--                console.log(response.data);
+--            } catch (error) {
+--                console.log(error.message);
+--            }
+--        };
+--
+--        axiosData();
+--    }, []);
+--
+--    const handleChange = (selectedOption) => {
+--        setSelectedCategories(selectedOption);
+--        const categoryIds = selectedOption.map((option) => option.value);
+--        onChangeCategoryIds(categoryIds);
+--    };
+--
+--    return (
+--        <div>
+--            <Select
+--                isMulti
+--                closeMenuOnSelect={false}
+--                options={options} // Bảo vệ options
+--                components={animatedComponents}
+--                value={selectedCategories}
+--                onChange={handleChange}
+--                placeholder="Danh mục sản phẩm"
+--            />
+--        </div>
+--    );
+++            const formattedData = transformData(response.data);
+++            setTreeData(formattedData);
+++         } catch (error) {
+++            console.log(error.message);
+++         }
+++      };
+++
+++      axiosData();
+++   }, []);
+++
+++   const handleChange = (selectedOption) => {
+++      setSelectedCategories(selectedOption);
+++      const categoryIds = selectedOption.map((option) => option);
+++      console.log(categoryIds);
+++      onChangeCategoryIds(categoryIds);
+++   };
+++
+++   return (
+++      <section className={cx('category-page')}>
+++         <TreeSelect
+++            showSearch
+++            style={{
+++               width: '100%',
+++            }}
+++            value={selectedCategories}
+++            dropdownStyle={{
+++               maxHeight: 400,
+++               overflow: 'auto',
+++            }}
+++            placeholder="Please select"
+++            allowClear
+++            multiple
+++            treeDefaultExpandAll={false}
+++            onChange={handleChange}
+++            treeData={treeData} // Dữ liệu đã lọc
+++            filterTreeNode={(inputValue, treeData) => treeData.title.toLowerCase().includes(inputValue.toLowerCase())}
+++         />
+++      </section>
+++   );
+  }
+  
+  export default CategorySelector;
+diff --cc src/layouts/HeaderOnly/headerOnly.js
+index 30e78ac,30e78ac..e6e6981
+--- a/src/layouts/HeaderOnly/headerOnly.js
++++ b/src/layouts/HeaderOnly/headerOnly.js
+@@@ -1,5 -1,5 +1,5 @@@
+  function HeaderOnly() {
+--    return <div>HeaderOnly</div>;
+++  return <div>HeaderOnly</div>;
+  }
+  
+  export default HeaderOnly;
+diff --cc src/layouts/components/Header/Header.module.scss
+index 6aa48ed,6aa48ed..0000000
+deleted file mode 100644,100644
+--- a/src/layouts/components/Header/Header.module.scss
++++ /dev/null
+@@@ -1,4 -1,4 +1,0 @@@
+--.logo-bitis {
+--    width: 95.96px;
+--    height: 60px;
+--}
+diff --cc src/pages/Admin/Admin.js
+index 5144410,5144410..4f7795a
+--- a/src/pages/Admin/Admin.js
++++ b/src/pages/Admin/Admin.js
+@@@ -3,158 -3,158 +3,74 @@@ import styles from "./Admin.module.scss
+  import { useEffect, useState } from "react";
+  import axios from "axios";
+  import ProductList from "../../components/Products/ProductList/ProductList";
+++import SearchProductAdmin from "../../components/function/SearchProductAdmin/SearchProductAdmin";
+++import CreateProductAdmin from "../../components/function/CreateProductAdmin/CreateProductAdmin";
+  
+  const cx = classNames.bind(styles);
+  
+  function Admin() {
+--    const [imageURL, setImageURl] = useState(null);
+--    const [productName, setProductName] = useState("");
+--    const [productPrice, setProductPrice] = useState("");
+--    const [products, setProducts] = useState([]);
+--    // Cập nhật sản phẩm ngay khi tạo phía admin
+--    const [search, setSearch] = useState("");
+--    const [countProduct, setCountProduct] = useState(0);
+--
+--    useEffect(() => {
+--        const fetchProducts = async () => {
+--            try {
+--                const response = await axios.get(
+--                    "http://localhost:3002/products"
+--                );
+--                setProducts(response.data);
+--                console.log(response.data);
+--            } catch (error) {
+--                console.log(error.message);
+--            }
+--        };
+--
+--        fetchProducts();
+--    }, [countProduct]);
+--
+--    // Create Product
+--    const handleCreateProduct = async (e) => {
+--        e.preventDefault();
+--
+--        const formData = new FormData();
+--        formData.append("image", imageURL);
+--        formData.append("name", productName);
+--        formData.append("price", productPrice);
+--        // FormData là một đối tượng trong JavaScript được sử dụng để xây dựng dữ liệu dưới dạng multipart/form-data.
+--        //  Đây là một định dạng đặc biệt cần thiết khi bạn muốn gửi cả file và dữ liệu text qua HTTP
+--
+--        try {
+--            const response = await axios.post(
+--                "http://localhost:3002/products",
+--                formData,
+--                {
+--                    headers: {
+--                        "Content-Type": "multipart/form-data",
+--                    },
+--                }
+--            );
+--            const newProduct = response.data.data;
+--            setProducts((prevProduct) => [...prevProduct, newProduct]);
+--            setCountProduct((prevCount) => prevCount + 1);
+--            console.log(newProduct);
+--        } catch (error) {
+--            console.log(error.message);
+--        }
+--    };
+--
+--    // Delete Product
+--    const handleDeleteProduct = (productId) => {
+--        setProducts((prevProducts) =>
+--            prevProducts.filter((product) => product.id !== productId)
+--        );
+++  const [products, setProducts] = useState([]);
+++  // Cập nhật sản phẩm ngay khi tạo phía admin
+++  const [countProduct, setCountProduct] = useState(0);
+++
+++  useEffect(() => {
+++    const fetchProducts = async () => {
+++      try {
+++        const response = await axios.get("http://localhost:3002/products");
+++        setProducts(response.data);
+++        console.log(response.data);
+++      } catch (error) {
+++        console.log(error.message);
+++      }
+      };
+  
+--    // Search Product
+++    fetchProducts();
+++  }, [countProduct]);
+  
+--    const handleSearchFilterProduct = async () => {
+--        try {
+--            const response = await axios.get(
+--                `http://localhost:3002/products/?search=${search}`
+--            );
+--        } catch (error) {
+--            console.log(error.message);
+--        }
+--    };
+++  // Delete Product
+++  const handleDeleteProduct = (productId) => {
+++    setProducts((prevProducts) =>
+++      prevProducts.filter((product) => product.id !== productId),
+++    );
+++  };
+  
+--    // Update Product
+++  // Search Product
+  
+--    const handleUpdateProduct = (updateProduct) => {
+--        setProducts((prevProducts) =>
+--            prevProducts.map((product) =>
+--                product.id === updateProduct.id ? updateProduct : product
+--            )
+--        );
+--    };
+++  const handleSearch = (searchProduct) => {
+++    setProducts(searchProduct);
+++  };
+  
+--    return (
+--        <div className={cx("container")}>
+--            <div className={cx("form-admin")}>
+--                <div>
+--                    {/* Create product */}
+--                    <form
+--                        className={cx("form-admin-edit")}
+--                        onSubmit={handleCreateProduct}
+--                    >
+--                        <div>
+--                            <label htmlFor="file">Thêm ảnh: </label>
+--                            <input
+--                                type="file"
+--                                id="file"
+--                                onChange={(e) => setImageURl(e.target.files[0])}
+--                                required
+--                            />
+--                        </div>
+++  // Update Product
+  
+--                        <div>
+--                            <label htmlFor="text">Tên sản phẩm: </label>
+--                            <input
+--                                type="text"
+--                                id="text"
+--                                onChange={(e) => setProductName(e.target.value)}
+--                                required
+--                            />
+--                        </div>
+++  const handleUpdateProduct = (updateProduct) => {
+++    setProducts((prevProducts) =>
+++      prevProducts.map((product) =>
+++        product.id === updateProduct.id ? updateProduct : product,
+++      ),
+++    );
+++  };
+  
+--                        <div>
+--                            <label htmlFor="text">Giá: </label>
+--                            <input
+--                                type="text"
+--                                id="text"
+--                                onChange={(e) =>
+--                                    setProductPrice(e.target.value)
+--                                }
+--                                required
+--                            />
+--                        </div>
+--                        <button type="submit">Tạo sản phẩm</button>
+--                    </form>
+++  return (
+++    <div className={cx("container")}>
+++      <div className={cx("form-admin")}>
+++        <div>
+++          {/* Create product */}
+++          <CreateProductAdmin setCountProduct={setCountProduct} />
+  
+--                    {/* Search product */}
+--                    <form>
+--                        <label>Search</label>
+--                        <input
+--                            type="text"
+--                            placeholder="search"
+--                            value={search}
+--                            onChange={(e) => setSearch(e.target.value)}
+--                        />
+--                    </form>
+--                </div>
+++          {/* Search product */}
+++          <SearchProductAdmin onSearch={handleSearch} />
+++        </div>
+  
+--                <div>
+--                    <ProductList
+--                        products={products}
+--                        onDelete={handleDeleteProduct}
+--                        onUpdate={handleUpdateProduct}
+--                    />
+--                </div>
+--            </div>
+++        <div>
+++          <ProductList
+++            products={products}
+++            onDelete={handleDeleteProduct}
+++            onUpdate={handleUpdateProduct}
+++          />
+          </div>
+--    );
+++      </div>
+++    </div>
+++  );
+  }
+  
+  export default Admin;
+diff --cc src/pages/Cart/cart.js
+index 3934d41,3934d41..8ee5e9e
+--- a/src/pages/Cart/cart.js
++++ b/src/pages/Cart/cart.js
+@@@ -1,5 -1,5 +1,5 @@@
+  function Cart() {
+--    return <h2>Cart</h2>;
+++  return <h2>Cart</h2>;
+  }
+  
+  export default Cart;
+diff --cc src/pages/Category/Nam/Nam.js
+index e126154,e126154..48077a8
+--- a/src/pages/Category/Nam/Nam.js
++++ b/src/pages/Category/Nam/Nam.js
+@@@ -7,96 -7,96 +7,95 @@@ import styles from "./Nam.module.scss"
+  const cx = classNames.bind(styles);
+  
+  function NamCategory() {
+--    const [slideBanners, setSlideBanner] = useState([]);
+--    const [products, setProducts] = useState([]);
+--    const [sizeSelected, setSizeSelected] = useState([]);
+++  const [slideBanners, setSlideBanner] = useState([]);
+++  const [products, setProducts] = useState([]);
+++  const [sizeSelected, setSizeSelected] = useState([]);
+  
+--    const sizes = [
+--        24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
+--        42, 43, 44, 45,
+--    ];
+++  const sizes = [
+++    24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
+++    43, 44, 45,
+++  ];
+  
+--    useEffect(() => {
+--        const fetchSlidBanner = async () => {
+--            try {
+--                const response = await axios.get(
+--                    "http://localhost:3002/slide-banner/slidebanners"
+--                );
+--                setSlideBanner(response.data);
+--            } catch (error) {
+--                console.log(error.message);
+--            }
+--        };
+--
+--        const fetchProductNam = async () => {
+--            try {
+--                const response = await axios.get(
+--                    `http://localhost:3002/products/?category=NAM`
+--                );
+--                setProducts(response.data);
+--            } catch (error) {
+--                console.log(error.messages);
+--            }
+--        };
+--        fetchSlidBanner();
+--        fetchProductNam();
+--    }, []);
+++  useEffect(() => {
+++    const fetchSlidBanner = async () => {
+++      try {
+++        const response = await axios.get(
+++          "http://localhost:3002/slide-banner/slidebanners",
+++        );
+++        setSlideBanner(response.data);
+++      } catch (error) {
+++        console.log(error.message);
+++      }
+++    };
+  
+--    const handleSizeChange = (size) => {
+--        setSizeSelected((prevSelected) =>
+--            prevSelected.includes(size)
+--                ? prevSelected.filter((s) => s !== size)
+--                : [...prevSelected, size]
+++    const fetchProductNam = async () => {
+++      try {
+++        const response = await axios.get(
+++          `http://localhost:3002/products/?category=NAM`,
+          );
+++        setProducts(response.data);
+++      } catch (error) {
+++        console.log(error.messages);
+++      }
+      };
+--    console.log(sizeSelected);
+--    return (
+--        <div>
+--            <SlideBanner slideBanners={slideBanners} />
+--            <div className={cx("container")}>
+--                <div className={cx("color-filter")}>
+--                    <div>Màu sắc</div>
+--                </div>
+--                <div className={cx("size-filter")}>
+--                    <div>Kích thước</div>
+--                    {sizes.map((size) => (
+--                        <label
+--                            className={cx(
+--                                "size-label",
+--                                sizeSelected.includes(size) &&
+--                                    "size-label_checked"
+--                            )}
+--                        >
+--                            <input
+--                                type="checkbox"
+--                                value={size}
+--                                onChange={() => handleSizeChange(size)}
+--                                checked={sizeSelected.includes(size)}
+--                            />
+--                            {size}
+--                        </label>
+--                    ))}
+--                    <div>Giá</div>
+--                </div>
+--                <div className={cx("arrange-price-filter")}>Sắp xếp theo</div>
+--                <section className={cx("product-section")}>
+--                    <div className={cx("product-list")}>
+--                        {products.map((product) => (
+--                            <article className={cx("product-item")}>
+--                                <img
+--                                    className={cx("product-image")}
+--                                    src={product.imageURL}
+--                                    alt={product.name}
+--                                />
+--                                <p>{product.name}</p>
+--                                <p>{product.price}</p>
+--                            </article>
+--                        ))}
+--                    </div>
+--                </section>
+--            </div>
+--        </div>
+++    fetchSlidBanner();
+++    fetchProductNam();
+++  }, []);
+++
+++  const handleSizeChange = (size) => {
+++    setSizeSelected((prevSelected) =>
+++      prevSelected.includes(size)
+++        ? prevSelected.filter((s) => s !== size)
+++        : [...prevSelected, size],
+      );
+++  };
+++  console.log(sizeSelected);
+++  return (
+++    <div>
+++      <SlideBanner slideBanners={slideBanners} />
+++      <div className={cx("container")}>
+++        <div className={cx("color-filter")}>
+++          <div>Màu sắc</div>
+++        </div>
+++        <div className={cx("size-filter")}>
+++          <div>Kích thước</div>
+++          {sizes.map((size) => (
+++            <label
+++              className={cx(
+++                "size-label",
+++                sizeSelected.includes(size) && "size-label_checked",
+++              )}
+++            >
+++              <input
+++                type="checkbox"
+++                value={size}
+++                onChange={() => handleSizeChange(size)}
+++                checked={sizeSelected.includes(size)}
+++              />
+++              {size}
+++            </label>
+++          ))}
+++          <div>Giá</div>
+++        </div>
+++        <div className={cx("arrange-price-filter")}>Sắp xếp theo</div>
+++        <section className={cx("product-section")}>
+++          <div className={cx("product-list")}>
+++            {products.map((product) => (
+++              <article className={cx("product-item")}>
+++                <img
+++                  className={cx("product-image")}
+++                  src={product.imageURL}
+++                  alt={product.name}
+++                />
+++                <p>{product.name}</p>
+++                <p>{product.price}</p>
+++              </article>
+++            ))}
+++          </div>
+++        </section>
+++      </div>
+++    </div>
+++  );
+  }
+  
+  export default NamCategory;
+diff --cc src/pages/Category/Nam/Nam.module.scss
+index f461b4a,f461b4a..fc64f41
+--- a/src/pages/Category/Nam/Nam.module.scss
++++ b/src/pages/Category/Nam/Nam.module.scss
+@@@ -1,35 -1,35 +1,38 @@@
+  .container {
+--    width: var(--default-layout-width);
+--    margin-left: auto;
+--    margin-right: auto;
+++  width: var(--default-layout-width);
+++  margin-left: auto;
+++  margin-right: auto;
+  }
+  
+  input[type="checkbox"] {
+--    display: none;
+++  display: none;
+  }
+  
+  .size-filter {
+--    display: flex;
+--    flex-wrap: wrap;
+--    gap: 10px;
+++  display: flex;
+++  flex-wrap: wrap;
+++  gap: 10px;
+  }
+  
+  .size-label {
+--    font-size: 1.3rem;
+--    font-weight: 600;
+--    width: 24px;
+--    height: 24px;
+--    display: inline-flex;
+--    align-items: center;
+--    justify-content: center;
+--    border: 1px solid #7e7e7eb7;
+--    border-radius: 999px;
+--    cursor: pointer;
+--    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+++  font-size: 1.3rem;
+++  font-weight: 600;
+++  width: 24px;
+++  height: 24px;
+++  display: inline-flex;
+++  align-items: center;
+++  justify-content: center;
+++  border: 1px solid #7e7e7eb7;
+++  border-radius: 999px;
+++  cursor: pointer;
+++  transition:
+++    background-color 0.3s,
+++    color 0.3s,
+++    border-color 0.3s;
+  }
+  
+  .size-label_checked {
+--    background-color: #2a7ad6b7;
+++  background-color: #2a7ad6b7;
+  }
+  
+  // input[type="checkbox"]:checked + .size-label {
+@@@ -37,13 -37,13 +40,13 @@@
+  // }
+  
+  .product-list {
+--    display: grid;
+--    grid-template-columns: auto auto auto auto;
+--    gap: 20px;
+++  display: grid;
+++  grid-template-columns: auto auto auto auto;
+++  gap: 20px;
+  }
+  
+  .product-image {
+--    width: 300px;
+--    height: 300px;
+--    object-fit: cover;
+++  width: 300px;
+++  height: 300px;
+++  object-fit: cover;
+  }
+diff --cc src/pages/Profile/profile.js
+index 3e32b77,3e32b77..f321b17
+--- a/src/pages/Profile/profile.js
++++ b/src/pages/Profile/profile.js
+@@@ -1,5 -1,5 +1,5 @@@
+  function Profile() {
+--    return <div>Profile</div>;
+++  return <div>Profile</div>;
+  }
+  
+  export default Profile;

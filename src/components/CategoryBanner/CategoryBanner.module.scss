@@ -1,0 +1,33 @@
+.layout {
+   width: var(--default-layout-width);
+}
+
+.image {
+   position: relative;
+}
+.title-category {
+   position: absolute;
+   bottom: 29px;
+   left: 148px;
+   font-size: 50px;
+   font-weight: 700;
+   color: rgb(230, 166, 4);
+}
+
+.title-category_redirect {
+   color: black !important;
+   font-size: 2rem;
+   font-weight: 600;
+   margin-top: 20px;
+
+   &:hover {
+      color: rgb(0, 123, 190) !important;
+   }
+}
+
+// Link {
+//    font-size: 2rem;
+//    font-weight: 600;
+//    margin-top: 20px;
+//    color: black;
+// }

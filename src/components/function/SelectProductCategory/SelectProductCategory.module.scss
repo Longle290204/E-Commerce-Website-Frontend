@@ -1,0 +1,33 @@
+// SelectProductCategory.module.scss
+
+select {
+  width: 200px;
+  height: 40px;
+  padding: 5px;
+  font-size: 16px;
+  color: #333;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  appearance: none; /* Loại bỏ mũi tên mặc định */
+}
+
+.select-wrapper {
+  position: relative;
+  width: 200px;
+
+  &::after {
+    position: absolute;
+    content: "";
+    top: 17px;
+    right: 18px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #000 transparent transparent transparent;
+  }
+
+  &.open::after {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}

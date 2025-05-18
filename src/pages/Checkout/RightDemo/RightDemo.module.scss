@@ -1,0 +1,98 @@
+.input-form-wrong {
+   border-bottom: 2px solid #f33a58 !important;
+}
+
+.input-form-correct:not(:placeholder-shown) {
+   border-bottom: 2px solid #00aa55 !important;
+}
+   
+.box-info > label {
+   font-weight: 400;
+}
+
+.box-info > label > span {
+   color: red;
+   margin-left: 2px;
+}
+
+form {
+   // width: 427.14px;
+}
+
+.form-signUp {
+   // margin-left: auto;
+}
+
+h4 {
+   font-size: 2.4rem;
+   font-weight: 400;
+   margin-bottom: 33px;
+   margin-left: 140px;
+}
+
+label {
+   font-size: 1.8rem;
+   font-weight: 400;
+}
+
+.box-info {
+   display: flex;
+   flex-direction: column;
+}
+
+.input-form {
+   color: #272727;
+   margin-top: 10px;
+}
+
+// .form-button {
+//    font-size: 1.5rem;
+//    padding: 10px;
+//    background-color: #333;
+//    color: #fff;
+//    outline: 0;
+//    border: 0;
+//    -webkit-appearance: none;
+//    border-radius: 3px;
+//    box-sizing: border-box;
+//    font-weight: 400;
+//    width: 250px;
+//    text-align: center;
+//    cursor: pointer;
+//    transition:
+//       background-color 0.2s ease,
+//       color 0.2s ease;
+//    &:hover {
+//       background-color: rgb(60, 58, 58);
+//       color: #e0e0e0;
+//    }
+// }
+
+.form-message {
+   font-size: 1.4rem;
+   color: #f33a58;
+}
+
+input {
+   outline: none;
+   font-family: inherit;
+}
+
+input:focus + label,
+input:not(:placeholder-shown) + label {
+   translate: 0 -153%;
+   background-color: #fff;
+   transition: all 0.2s ease-out; /* Dùng all để áp dụng cho mọi thay đổi */
+   transform-origin: left bottom; /* Điều chỉnh điểm xoay */
+   scale: 0.88; /* Phóng to nhẹ để nhìn tự nhiên hơn */
+}
+
+.label-name {
+   left: 11px;
+   top: 50%;
+   translate: 0 -68%;
+   padding: 4px;
+   transition: translate 0.2s;
+   transition: all 0.2s ease-out; /* Dùng all để tránh giật */
+   pointer-events: none;
+}

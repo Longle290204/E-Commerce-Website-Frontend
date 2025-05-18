@@ -1,0 +1,24 @@
+.custom-treeselect .ant-select-selector:where(*) {
+   border: none !important; /* Xóa viền */
+   // box-shadow: none !important; /* Xóa hiệu ứng khi focus */
+   background: none;
+}
+
+.custom-treeselect .ant-select-selector {
+   border: 2px solid #4caf50 !important; /* Viền màu xanh lá */
+   border-radius: 8px; /* Bo góc */
+   transition: border-color 0.3s ease; /* Hiệu ứng mượt */
+}
+
+.custom-treeselect .ant-select-selector:hover {
+   border-color: #2196f3; /* Đổi màu viền khi hover */
+}
+
+.custom-treeselect .ant-select-selector:focus-within {
+   border-color: #ff9800; /* Đổi màu viền khi focus */
+}
+
+.custom-treeselect .ant-select-selector:where(*) {
+   border: 2px solid #4caf50 !important;
+   border-radius: 8px !important;
+}

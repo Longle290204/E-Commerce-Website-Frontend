@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../Context/CartContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import axiosInstance from '../../api/axiosInstance';
+import { useAxiosInstance } from '../../api/axiosInstance';
 import images from '../../assets/images/image';
 import styles from './CartPage.module.scss';
 import classNames from 'classnames/bind';
@@ -15,20 +15,25 @@ function CartPage() {
 
    const [countCartItem, setCountCartItem] = useState(0);
 
+   const axiosInstance = useAxiosInstance();
+
    // Get data cart
    useEffect(() => {
       const axiosProducts = async () => {
-         const accessToken = localStorage.getItem('accessToken');
-
-         const response = await axiosInstance.get(`http://localhost:3002/cart`, {
+         const response = await axiosInstance.get(`/cart`, {
             headers: {
-               Authorization: `Bearer ${accessToken}`,
+               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
          });
 
          console.log('data test', response.data);
          // Set data
          cart.setCartItems(response.data.cartItems);
+
+         // Quantity total product
+         cart.setQuantityProduct(response.data.quantityProduct);
+
+         console.log('cartItems', cart.cartItems);
 
          // Đếm số phần tử trong mảng cartItems và set count
          const countItems = cart.cartItems.reduce((countItem) => countItem + 1, 0);
@@ -129,7 +134,7 @@ function CartPage() {
                <div className="mb-20">
                   <h1 className="text-[3.6rem] text-[#000] font-semibold mb-2">GIỎ HÀNG CỦA BẠN</h1>
                   <p className="font-sans text-[17px] mb-2">
-                     TỔNG CỘNG (<strong>{cart.quantityTotalProduct}</strong> sản phẩm) <strong>${cart.cartTotal}</strong>
+                     TỔNG CỘNG (<strong>{cart.quantityProduct}</strong> sản phẩm) <strong>${cart.cartTotal}</strong>
                   </p>
                   <p className="font-sans text-[17px]">
                      Các mặt hàng trong giỏ hàng của bạn không được bảo lưu — hãy kiểm tra ngay để đặt hàng.
@@ -220,7 +225,7 @@ function CartPage() {
                <h2 className="text-[2.3rem] text-[#000000] font-semibold mb-2">THÔNG TIN ĐƠN HÀNG</h2>
 
                <div className="flex justify-between mt-7">
-                  <p>{cart.quantityTotalProduct} sản phẩm</p>
+                  <p>{cart.quantityProduct} sản phẩm</p>
                   <span>{cart.cartTotal}₫</span>
                </div>
                <div className="flex justify-between mb-7">

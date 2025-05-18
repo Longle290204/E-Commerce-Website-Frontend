@@ -1,0 +1,30 @@
+/* Tùy chỉnh thanh cuộn */
+.scroll-container {
+   // height: 400px; /* Giả sử chiều cao giới hạn */
+   overflow-y: auto; /* Hiển thị thanh cuộn dọc */
+}
+
+/* Thanh cuộn chung */
+.scroll-container::-webkit-scrollbar {
+   width: 8px; /* Độ rộng thanh cuộn */
+} 
+
+/* Track (nền của thanh cuộn) */
+.scroll-container::-webkit-scrollbar-track {
+   background: rgba(255, 255, 255, 0.2); /* Nền trong suốt */
+   backdrop-filter: blur(5px); /* Hiệu ứng mờ */
+   border-radius: 10px; /* Bo góc */
+} 
+
+/* Thumb (thanh trượt) */
+.scroll-container::-webkit-scrollbar-thumb {
+   background: rgba(0, 0, 0, 0.4); /* Màu của thanh trượt */
+   backdrop-filter: blur(5px); /* Làm mờ nền bên trong */
+   border-radius: 10px; /* Bo góc */
+   border: 2px solid rgba(255, 255, 255, 0.2); /* Đường viền cho thanh trượt */
+}
+
+/* Thumb khi hover */
+.scroll-container::-webkit-scrollbar-thumb:hover {
+   background: rgba(0, 0, 0, 0.6); /* Màu tối hơn khi hover */
+}

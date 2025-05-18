@@ -1,19 +1,19 @@
 import React from 'react';
-import CheckoutPage from '../Checkout/checkout';
-import images from '../../assets/images/image';
-import { Link } from 'react-router-dom';
+import PaymentMethod from '../Payment-method/Payment-method';
+import Right from '../Checkout/Right/Right';
 
 function PaymentPage() {
    return (
-      <>
-         <header>
-            <Link to="/">
-               <img src={images.logoLevion} alt="Levion-logo" className="w-[95px] h-[60px] cursor-pointer" />
-            </Link>
-         </header>
-
-         <CheckoutPage />
-      </>
+      <div className="w-[--default-layout-width]">
+         <div className="grid grid-cols-12 mt-20 mb-20">
+            <div className='col-span-6 mr-20'>
+               <PaymentMethod />
+            </div>
+            <div className='col-span-6 ml-60'>
+               <Right />
+            </div>
+         </div>
+      </div>
    );
 }
 

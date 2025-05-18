@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, CardMedia, Typography, Button, Box } from '@mui/material';
+import { CardMedia, Typography, Button, Box, Tooltip } from '@mui/material';
 import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { style } from '@mui/system';
 
 function ProductInfo({ id }) {
    // Option color
@@ -16,6 +15,8 @@ function ProductInfo({ id }) {
    const [sizes, setSizes] = useState([]);
    const [stock, setStock] = useState(0);
    const [activeSize, setActiveSize] = useState();
+
+   const [errorMessage, setErrorMessage] = useState('');
 
    const handleQuantity = (method) => {
       setInputValue((prev) => {
@@ -40,19 +41,33 @@ function ProductInfo({ id }) {
    const handleAddToCart = async (productId) => {
       const accessToken = localStorage.getItem('accessToken');
 
-      const response = await axios.post(
-         `http://localhost:3002/cart`,
-         {
-            productId,
-            quantity: inputValue,
-            sizeId: activeSize,
-         },
-         {
-            headers: {
-               Authorization: `Bearer ${accessToken}`,
+      try {
+         const response = await axios.post(
+            `http://localhost:3002/cart`,
+            {
+               productId,
+               quantity: inputValue,
+               sizeId: activeSize,
             },
-         },
-      );
+            {
+               headers: {
+                  Authorization: `Bearer ${accessToken}`,
+               },
+            },
+         );
+      } catch (error) {
+         if (axios.isAxiosError(error)) {
+            console.log('Lỗi từ server:', error.response);
+            if (error.response?.status === 400 && error.response?.data?.message === 'Out of stock') {
+               setErrorMessage('Vượt quá số lượng có sẵn');
+            } else {
+               setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại.');
+            }
+         } else {
+            // Nếu không phải lỗi Axios (lỗi khác)
+            setErrorMessage('Lỗi không xác định');
+         }
+      }
    };
 
    const handleClickSize = async (productId, sizeId) => {
@@ -165,8 +180,9 @@ function ProductInfo({ id }) {
                               setActiveSize(item.size.id);
                               handleClickSize(item.product.id, item.size.id);
                            }}
+                           disabled={item.stock === 0} // <-- Vô hiệu hóa nếu hết hàng
                            sx={{
-                              fontSize: '1.5rem',
+                              fontSize: '1.4rem',
                               width: '40px', // Tăng kích thước để vừa với chữ số
                               height: '30px', // Đảm bảo chiều cao bằng chiều rộng
                               minWidth: 0, // Loại bỏ minWidth mặc định của MUI
@@ -175,7 +191,6 @@ function ProductInfo({ id }) {
                               paddingLeft: 4,
                               paddingRight: 4,
                               border: activeSize === item.size.id ? '2px solid #000 !important ' : '1px solid #e1e1e1 !important',
-                              borderRadius: '2',
                            }}
                         >
                            {item.size.size}
@@ -238,6 +253,8 @@ function ProductInfo({ id }) {
                   {stock} sản phẩm có sẵn
                </Typography>
             </Box>
+
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
             {/* =============== Nút mua hàng =============== */}
             <Box display="flex" gap="20px" sx={{ marginTop: 5 }}>

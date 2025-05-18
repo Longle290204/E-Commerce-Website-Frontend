@@ -1,0 +1,20 @@
+import classNames from "classnames/bind";
+import styles from "./ProductAdminPage.module.scss";
+import CreateProductAdmin from "../../../components/function/CreateProductAdmin/CreateProductAdmin";
+
+const cx = classNames.bind(styles);
+
+function ProductAdminPage() {
+  return (
+    <div>
+      <p className={cx("product-title")}>Sản phẩm</p>
+
+      <button className={cx("button-create")}>Thêm mới</button>
+
+      <input placeholder="Nhập tiêu đề hoặc ID" />
+      <CreateProductAdmin />
+    </div>
+  );
+}
+
+export default ProductAdminPage;

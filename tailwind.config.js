@@ -18,11 +18,11 @@ module.exports = {
             responsive: 'clamp(1.7rem, 2vw, 1.75rem)',
          },
 
-         fontFamily: {
-            nunito: ['Nunito', 'sans-serif'],
-            poppins: ['Poppins', 'sans-serif'],
-            quicksand: ['Quicksand', 'sans-serif'],
-         },
+         // fontFamily: {
+         //    nunito: ['Nunito', 'sans-serif'],
+         //    poppins: ['Poppins', 'sans-serif'],
+         //    quicksand: ['Quicksand', 'sans-serif'],
+         // },
          // fontSize: {
          //    base: '10px', // Định nghĩa 1rem = 10px
          // },

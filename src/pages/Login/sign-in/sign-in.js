@@ -39,6 +39,9 @@ function SignIn() {
          localStorage.setItem('accessToken', response.data.accessToken);
          localStorage.setItem('refreshToken', response.data.refreshToken);
 
+         console.log('accessToken', response.data.accessToken);
+         console.log('refreshToken', response.data.refreshToken);
+
          const token = localStorage.getItem('accessToken');
 
          if (token) {
