@@ -27,9 +27,8 @@ function ListProductPage() {
       setProducts((prevProducts) => prevProducts.map((product) => (product.id === updateProduct.id ? updateProduct : product)));
    };
    return (
-      <div>
+      <div className='p-10'>
          <ProductList products={products} onDelete={handleDeleteProduct} onUpdate={handleUpdateProduct} />
-         {/* <Admin /> */}
       </div>
    );
 }

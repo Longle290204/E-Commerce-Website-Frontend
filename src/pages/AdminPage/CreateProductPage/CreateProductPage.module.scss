@@ -1,0 +1,25 @@
+.create-product-admin {
+   padding: 30px;
+}
+
+.form-admin {
+   display: flex;
+}
+
+.form-admin-edit {
+   display: flex;
+   flex-direction: column;
+}
+
+input {
+   border: 2px solid grey;
+   padding: 5px;
+}
+
+.input-price {
+   font-size: 1.7rem; /* Giảm font nếu cần */
+}
+
+label {
+  font-size: 1.6rem;
+}
