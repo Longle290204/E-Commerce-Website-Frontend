@@ -112,9 +112,8 @@ function CreateProductAdmin({ setCountProduct }) {
                      <label htmlFor="category-select" className="font-medium text-gray-700 cursor-pointer">
                         Danh mục<span style={{ color: 'red' }}>(*)</span>
                      </label>
-                     <div className="flex items-center h-14 w-full border border-gray-300 rounded-md">
-                        <CategorySelector id="category-select" onChangeCategoryIds={setCategoryIds} />
-                     </div>
+
+                     <CategorySelector id="category-select" onChangeCategoryIds={setCategoryIds} />
                   </div>
 
                   {/* Trạng thái */}
