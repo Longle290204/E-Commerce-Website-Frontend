@@ -138,9 +138,9 @@ function CreateProductAdmin({ setCountProduct }) {
                   </div>
                </div>
 
-               <div className="flex justify-between items-center w-full gap-10">
-                  {/* Số lượng nhập */}
-                  <div className="flex flex-col w-full">
+               {/* <div className="flex justify-between items-center w-full gap-10"> */}
+               {/* Số lượng nhập */}
+               {/* <div className="flex flex-col w-full">
                      <label htmlFor="quantity-product">
                         Số lượng nhập<span style={{ color: 'red' }}>(*)</span>
                      </label>
@@ -152,10 +152,10 @@ function CreateProductAdmin({ setCountProduct }) {
                         placeholder="Tên sản phẩm"
                         required
                      />
-                  </div>
+                  </div> */}
 
-                  {/* Giá tiền bán sản phẩm */}
-                  <div className="flex flex-col w-full">
+               {/* Giá tiền bán sản phẩm */}
+               {/* <div className="flex flex-col w-full">
                      <label htmlFor="import-price">
                         Giá tiền nhập sản phẩm<span style={{ color: 'red' }}>(*)</span>
                      </label>
@@ -167,9 +167,9 @@ function CreateProductAdmin({ setCountProduct }) {
                         placeholder="Tên sản phẩm"
                         required
                      />
-                  </div>
+                  </div> */}
 
-                  <div className="flex flex-col w-full">
+               {/* <div className="flex flex-col w-full">
                      <label htmlFor="discount-price">
                         Giá tiền giảm sản phẩm<span style={{ color: 'red' }}>(*)</span>
                      </label>
@@ -181,8 +181,8 @@ function CreateProductAdmin({ setCountProduct }) {
                         placeholder="Tên sản phẩm"
                         required
                      />
-                  </div>
-               </div>
+                  </div> */}
+               {/* </div> */}
             </div>
 
             <div data-testid="cypress-create_product" className="mt-5">
